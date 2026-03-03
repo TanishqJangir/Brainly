@@ -1,4 +1,4 @@
-export interface LogoProps {
+export interface IconProps {
     className?: string;
     onClick?: () => void;
 }
