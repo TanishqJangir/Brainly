@@ -5,7 +5,7 @@ import { Button } from "../ui/Button";
 
 const Hero = () => {
     return (
-        <div className="relative w-full h-[calc(100vh-68px)] flex justify-center items-center text-center pl-23 bg-transparent dark:text-white text-black select-none border-b dark:border-gray-700 border-gray-300">
+        <div className="relative w-full h-[calc(100vh-68px)] flex justify-center items-center text-center pl-23 bg-transparent dark:text-white text-black select-none border-b border-gray-200 dark:border-white/10">
             {/* Glow — light mode */}
             <div className="absolute right-[10%] top-1/2 -translate-y-1/2 w-[55%] h-[80%] rounded-full bg-violet-300/30 blur-[80px] pointer-events-none dark:hidden" />
             {/* Glow — dark mode */}
