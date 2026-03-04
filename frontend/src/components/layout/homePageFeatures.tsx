@@ -23,7 +23,7 @@ const featuresCard = [
 
 const Features = () => {
     return (
-        <div className="min-h-screen w-full flex justify-start flex-col dark:text-white px-6 sm:px-12 lg:px-24 pb-20">
+        <div className="min-h-screen w-full flex justify-start flex-col dark:text-white px-6 sm:px-12 lg:px-24 pb-20 border-b border-gray-200 dark:border-white/10">
             <div className="w-full">
                 <div className="w-full md:w-1/2 py-20 flex flex-col justify-center items-start gap-4">
                     <h1 className="md:text-6xl font-extrabold">Powerful Features for Your <span className="text-[#4c2dee]">Digital Brain</span></h1>

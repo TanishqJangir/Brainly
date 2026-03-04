@@ -3,7 +3,7 @@ import { Button } from "../ui/Button";
 
 const ReadyHomeCard = () => {
     return (
-        <div className="flex h-screen w-full justify-center items-center">
+        <div className="flex h-screen w-full justify-center items-center border-b border-gray-200 dark:border-white/10">
             <div className="bg-[#4e34e6] h-[60%] w-[80%] rounded-3xl flex flex-col justify-center items-center gap-6 text-white px-10 text-center select-none">
                 <h1 className="md:text-5xl text-3xl w-[50%] font-extrabold">Ready to build your second brain?</h1>
                 <p className="text-lg md:text-xl text-gray-200 w-[50%]">Organize, capture, and retrieve your thoughts instantly with our intelligent note-taking platform.</p>
