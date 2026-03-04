@@ -12,16 +12,10 @@
 
     body {
         background-color: #f9fafb;
-        background-image: radial-gradient(ellipse 80% 70% at 75% 45%, rgba(167, 139, 250, 0.4) 0%, rgba(139, 92, 246, 0.2) 40%, transparent 70%);
-        background-attachment: fixed;
-        background-size: cover;
     }
 
     .dark body {
         background-color: #0d0b1e;
-        background-image: radial-gradient(ellipse 80% 70% at 75% 45%, rgba(109, 60, 255, 0.55) 0%, rgba(60, 20, 150, 0.3) 45%, transparent 70%);
-        background-attachment: fixed;
-        background-size: cover;
     }
 }
 
