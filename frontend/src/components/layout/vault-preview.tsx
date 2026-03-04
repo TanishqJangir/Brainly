@@ -42,7 +42,7 @@ const VaultPreview = () => {
                 {fixedCards.map((card, index) => (
                     <div
                         key={index}
-                        className="rounded-2xl overflow-hidden flex flex-col dark:bg-[#13152a] bg-white border dark:border-white/10 border-gray-200 hover:scale-[1.02] transition-transform duration-300 ease-in-out cursor-pointer shadow-sm"
+                        className="group rounded-2xl overflow-hidden flex flex-col dark:bg-[#13152a] bg-white border dark:border-white/10 border-gray-200 hover:scale-[1.01] transition-transform duration-300 ease-in-out cursor-pointer shadow-sm"
                     >
                         <div className="w-full h-32 sm:h-40 md:h-48 overflow-hidden shrink-0">
                             <img
@@ -58,7 +58,7 @@ const VaultPreview = () => {
                                 </span>
                                 <span className="text-xs text-gray-400 dark:text-gray-500">{card.time}</span>
                             </div>
-                            <h3 className="text-sm sm:text-base font-bold dark:text-white text-gray-900 leading-snug">
+                            <h3 className="text-sm sm:text-base font-bold dark:text-white text-gray-900 leading-snug group-hover:text-[#4c2dee]">
                                 {card.title}
                             </h3>
                         </div>
