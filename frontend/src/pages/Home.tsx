@@ -1,5 +1,6 @@
 import Hero from "../components/layout/hero";
 import Navbar from "../components/layout/navbar";
+import ValultPreview from "../components/layout/vault-preview";
 
 
 const Home = () => {
@@ -7,6 +8,7 @@ const Home = () => {
         <div>
       <Navbar />
       <Hero />
+      <ValultPreview/>
     </div>
     )
 }
