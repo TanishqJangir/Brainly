@@ -25,15 +25,15 @@ const Features = () => {
     return (
         <div className="min-h-screen w-full flex justify-start flex-col dark:text-white px-6 sm:px-12 lg:px-24 pb-20 border-b border-gray-200 dark:border-white/10">
             <div className="w-full">
-                <div className="w-full md:w-1/2 py-20 flex flex-col justify-center items-start gap-4">
-                    <h1 className="md:text-6xl font-extrabold">Powerful Features for Your <span className="text-[#4c2dee]">Digital Brain</span></h1>
-                    <p className="text-lg md:text-xl text-gray-400 w-[75%]">Everything you need to manage your digital knowledge base in one place. No more lost tabs or broken bookmarks.</p>
+                <div className="w-full py-20 flex flex-col justify-center items-center gap-4">
+                    <h1 className="md:text-6xl font-extrabold">Powerful Features for Your <span className="text-brand">Digital Brain</span></h1>
+                    <p className="text-lg md:text-2xl text-gray-400 w-[70%] text-center">Everything you need to manage your digital knowledge base in one place. No more lost tabs or broken bookmarks.</p>
                 </div>
                 <div className="w-full">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-between">
                         {featuresCard.map((card, index) => (
                             <div key={index} className="group flex flex-col justify-start items-start gap-4 p-6 bg-gray-100 dark:bg-[#151526] rounded-xl dark:border-gray-700 border-gray-300 transition-shadow duration-300 hover:shadow-[0_8px_30px_rgba(124,58,237,0.15)] dark:hover:shadow-[0_8px_30px_rgba(124,58,237,0.15)] select-none">
-                            <div className="p-2 rounded-2xl h-auto w-auto dark:bg-[#1a1839] bg-[#4c2dee]/10 text-[#4c2dee] transition-transform duration-300 ease-in-out group-hover:scale-110">
+                            <div className="p-2 rounded-2xl h-auto w-auto dark:bg-[#1a1839] bg-brand/10 text-brand transition-transform duration-300 ease-in-out group-hover:scale-110">
                                 {card.link}
                             </div>
                             <div>
