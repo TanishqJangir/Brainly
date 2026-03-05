@@ -10,14 +10,16 @@ const ReadyHomeCard = () => {
                 <div className="flex md:gap-5 gap-2">
                     <Button
                     varient="primary" 
-                    className="bg-white text-[#4e34e6]! md:font-bold md:text-xl font-semibold md:px-6 md:py-4 px-3 py-2 rounded-3xl! hover:bg-gray-200 transition-all duration-300 scale-[1.02] hover:scale-[1.04]"
+                    className="bg-white text-[#4e34e6]! md:font-bold md:text-xl font-semibold md:px-6 md:py-4 px-3 py-2 rounded-3xl! hover:bg-gray-200 transition-all duration-300 hover:scale-[1.03]"
+                    onClick={() => {}} //TODO: Add functionality to navigate to the sign up page
                     >
                         Get Started for Free
                     </Button>
 
                     <Button
                     varient="primary" 
-                    className="bg-[#735bfa] text-white! md:font-bold md:text-xl font-semibold md:px-6 md:py-4 px-3 py-2 rounded-3xl! transition-all duration-300 hover:bg-[#6650e9] scale-[1.02] hover:scale-[1.04]"
+                    className=" bg-[#735bfa]! dark:bg-[#735bfa] text-white! md:font-bold md:text-xl font-semibold md:px-6 md:py-4 px-3 py-2 rounded-3xl! transition-all duration-300 hover:bg-[#6650e9]! "
+                    onClick={() => {}} //TODO: Add functionality to navigate to the about page
                     >
                         Learn More
                     </Button>

@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+    --color-brand: #4c2dee;
+}
+
 /* Smooth dark mode transition on all elements */
 @layer base {
     *,
