@@ -9,7 +9,7 @@ import Link from "../ui/Link";
 
 const HomePageFooter = () => {
     return (
-        <div className="w-full h-full flex flex-col justify-center items-center text-gray-500 py-10 dark:bg-[#0d0c16] bg-gray-200">
+        <div className="w-full h-full flex flex-col justify-center items-center font-[480] text-gray-500 py-10 dark:bg-[#000000] bg-white">
             <div className="grid grid-cols-4 w-[86%] md:gap-10 gap-10 my-6">
                 <div className="flex flex-col justify-between items-start md:gap-6 gap-4">
                     <div className="flex flex-col gap-4">
@@ -23,17 +23,17 @@ const HomePageFooter = () => {
                         <p>The only bookmarking tool you'll ever need. Built for the modern web and the curious minds that explore it.</p>
                     </div>
                     <div className="flex md:gap-4 gap-2 mt-2">
-                        <div className="group p-2 bg-brand hover:bg-[#5137e8] hover:scale-[1.1] rounded-2xl cursor-pointer transition duration-300">
-                            <GithubIcon className="text-white" />
+                        <div className="group p-2 dark:bg-[#0d0d0d] bg-[#f8fafc] dark:hover:bg-brand hover:scale-[1.1] rounded-2xl cursor-pointer transition duration-300">
+                            <GithubIcon className="dark:text-white text-black hover:text-brand dark:hover:text-white" />
                         </div>
-                        <div className="group p-2 bg-brand hover:bg-[#5137e8] hover:scale-[1.1] rounded-2xl cursor-pointer transition duration-300">
-                            <InstagramIcon className="text-white" />
+                        <div className="group p-2 dark:bg-[#0d0d0d] bg-[#f8fafc] dark:hover:bg-brand hover:scale-[1.1] rounded-2xl cursor-pointer transition duration-300">
+                            <InstagramIcon className="dark:text-white text-black hover:text-brand dark:hover:text-white" />
                         </div>
-                        <div className="group p-2 bg-brand hover:bg-[#5137e8] hover:scale-[1.1] rounded-2xl cursor-pointer transition duration-300">
-                            <LinkdinIcon className="text-white" />
+                        <div className="group p-2 dark:bg-[#0d0d0d] bg-[#f8fafc] dark:hover:bg-brand hover:scale-[1.1] rounded-2xl cursor-pointer transition duration-300">
+                            <LinkdinIcon className="dark:text-white text-black hover:text-brand dark:hover:text-white" />
                         </div>
-                        <div className="group p-2 bg-brand hover:bg-[#5137e8] hover:scale-[1.1] rounded-2xl cursor-pointer transition duration-300">
-                            <TwitterIcon className="text-white" />
+                        <div className="group p-2 dark:bg-[#0d0d0d] bg-[#f8fafc] dark:hover:bg-brand hover:scale-[1.1] rounded-2xl cursor-pointer transition duration-300">
+                            <TwitterIcon className="dark:text-white text-black hover:text-brand dark:hover:text-white" />
                         </div>
                     </div>
                 </div>
@@ -104,13 +104,9 @@ const HomePageFooter = () => {
                     </div>
                 </div>
             </div>
-            <div className="w-[86%] flex justify-between items-center border-t border-gray-400 dark:border-white/10 pt-6">
-                <p className="text-center text-sm text-gray-500">
-                    © 2023 Your Company. All rights reserved.
-                </p>
-                <p className="text-center text-sm text-gray-500 ">
-                    Designed with precision for your digital brain.
-                </p>
+            <div className="w-[86%] flex justify-between items-center border-t border-gray-400 dark:border-white/10 pt-6 text-[#949eb2] text-center text-sm">
+                <p>© 2023 Your Company. All rights reserved.</p>
+                <p>Designed with precision for your digital brain.</p>
             </div>
         </div>
     )

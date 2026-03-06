@@ -1,17 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import logo from "../../assets/logos/logo.svg";
 import Link from "../ui/Link";
 import SunIcon from "../../assets/svgIcons/SunIcon";
 import MoonIcon from "../../assets/svgIcons/MoonIcon";
+import { toggleTheme, isDarkMode } from "../../utils/toggleTheme";
 
 const Navbar = () => {
-    const [isDark, setIsDark] = useState(
-        () => document.documentElement.classList.contains('dark')
-    );
+    const [isDark, setIsDark] = useState(() => isDarkMode());
+    const navigate = useNavigate();
 
     return (
-        <div className="w-full h-17 bg-white/60 backdrop-blur-sm dark:bg-black/20 dark:backdrop-blur-sm flex justify-between items-center dark:text-white px-4 sm:px-8 md:px-12 lg:px-20 text-black border-b dark:border-gray-700 border-gray-300">
+        <div className="w-full h-17 bg-white/90 backdrop-blur-sm dark:bg-[#111111]/90 dark:backdrop-blur-sm flex justify-between items-center dark:text-white px-4 sm:px-8 md:px-12 lg:px-20 text-black border-b border-gray-200 dark:border-white/10 fixed left-1/2 -translate-x-1/2 z-30">
             <Link href="/" className="flex items-center gap-2 cursor-pointer">
                 <div className="flex items-center justify-center w-7 h-7 md:h-9 md:w-9 bg-brand rounded-full">
                     <img src={logo} alt="Brainly Logo" className="md:size-6 size-4" />
@@ -27,11 +28,8 @@ const Navbar = () => {
             <div className="flex gap-4 justify-center items-center">
             <button
                 onClick={(e) => {
-                    const btn = e.currentTarget;
-                    btn.classList.add('animate-spin-once');
-                    document.documentElement.classList.toggle('dark');
+                    toggleTheme(e.currentTarget);
                     setIsDark(prev => !prev);
-                    setTimeout(() => btn.classList.remove('animate-spin-once'), 600);
                 }}
                 className="cursor-pointer transition-all duration-300 hover:scale-110 p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20"
             >
@@ -43,15 +41,15 @@ const Navbar = () => {
 
             <Button 
             varient="ghost" 
-            className="rounded-2xl! px-8! font-semibold text-sm md:text-base dark:bg-[#181336]! dark:hover:bg-[#181336] dark:hover:text-indigo-600 bg-gray-200! hover:text-indigo-500 active:scale-95 active:brightness-90"
-            onClick={() => {}} //TODO: add login functionality
+            className="rounded-2xl! px-8! font-semibold text-sm md:text-base dark:bg-[#181336]! dark:hover:bg-[#181336] dark:hover:text-brand bg-gray-200! hover:text-indigo-500 active:scale-95 active:brightness-90"
+            onClick={() => navigate("/login")}
             >
                 Login
             </Button>
             <Button 
             varient="primary" 
             className="rounded-2xl! md:px-6 px-3 text-sm md:text-base active:scale-95 active:brightness-90"
-            onClick={() => {}} //TODO: add signup functionality
+            onClick={() => navigate("/signup")}
             >
                 Get Started
             </Button>
