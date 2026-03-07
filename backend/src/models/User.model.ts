@@ -10,6 +10,9 @@ const UserSchema = new Schema({
     isEmailVarified: { type: Boolean, default: false },
     otp: { type: String, default: null },
     otpExpiry: { type: Date, default: null },
+    shareLink: {type: String, unique:true, default: null},
+    isShareEnabled: {type: Boolean, default: false},
+    shareLinkExpiry: { type: Date, default: null },
 }, {
     timestamps: true
 });
