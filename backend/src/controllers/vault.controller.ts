@@ -13,7 +13,7 @@ export const createContentController = async (req: Request, res: Response): Prom
     }
 
     try {
-        const existingContent = await Vault.findOne({ url });
+        const existingContent = await Vault.findOne({ url, userId: (req.user as TokenPayload).userId });
 
         if (existingContent) {
             return res.status(400).json({
