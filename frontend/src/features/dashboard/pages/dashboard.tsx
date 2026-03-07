@@ -14,7 +14,7 @@ const Dashboard = () => {
                 <button
                     onClick={() => setCollapsed(prev => !prev)}
                     title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-                    className="absolute -right-3.5 top-5 z-10 flex items-center justify-center w-7 h-7 rounded-full bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white shadow-sm transition-colors duration-150"
+                    className="cursor-pointer absolute -right-3.5 top-5 z-10 flex items-center justify-center w-7 h-7 rounded-full bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white shadow-sm transition-colors duration-150"
                 >
                     <SidebarIcon className="size-4" />
                 </button>
