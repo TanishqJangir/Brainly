@@ -1,20 +1,21 @@
 import { Request, Response } from 'express';
 import { Vault } from '../models/Vault.model';
 import { TokenPayload } from '../utils/jwt';
+import { Tag } from '../models/Tag.model';
 
 export const createContentController = async (req: Request, res: Response): Promise<any> => {
-    const {title, description, url, type, Tags} = req.body;
+    const { title, description, url, type, tags } = req.body;
 
-    if(!title || !url || !type){
+    if (!title || !url || !type) {
         return res.status(400).json({
             message: "Title, URL and Type are required fields."
         });
     }
 
-    try{
-        const existingContent = await Vault.findOne({url});
+    try {
+        const existingContent = await Vault.findOne({ url });
 
-        if(existingContent){
+        if (existingContent) {
             return res.status(400).json({
                 message: "Content with the same URL already exists."
             });
@@ -25,7 +26,7 @@ export const createContentController = async (req: Request, res: Response): Prom
             description,
             url,
             type,
-            Tags,
+            tags,
             userId: (req.user as TokenPayload).userId
         });
 
@@ -44,7 +45,7 @@ export const createContentController = async (req: Request, res: Response): Prom
 
 export const getContentsController = async (req: Request, res: Response): Promise<any> => {
     try {
-        const contents = await Vault.find({userId: (req.user as TokenPayload).userId}).sort({createdAt: -1});
+        const contents = await Vault.find({ userId: (req.user as TokenPayload).userId }).sort({ createdAt: -1 });
         return res.status(200).json({
             message: "Contents retrieved successfully.",
             contents
@@ -59,10 +60,9 @@ export const getContentsController = async (req: Request, res: Response): Promis
 
 
 export const deleteContentController = async (req: Request, res: Response): Promise<any> => {
-    
-    try{
-        const {id} = req.params;
-        
+    try {
+        const { id } = req.params;
+
         const content = await Vault.findOne({
             _id: id,
             userId: (req.user as TokenPayload).userId
@@ -74,22 +74,35 @@ export const deleteContentController = async (req: Request, res: Response): Prom
             });
         }
 
-        await Vault.deleteOne({_id: id});
+        await Vault.deleteOne({ _id: id });
+
+        for (const tagName of content.tags) {
+            const stillUsed = await Vault.findOne({
+                userId: (req.user as TokenPayload).userId,
+                tags: tagName,
+                _id: { $ne: id }
+            });
+
+            if (!stillUsed) {
+                await Tag.deleteOne({ tag: tagName, userId: (req.user as TokenPayload).userId });
+            }
+        }
 
         return res.status(200).json({
             message: "Content deleted successfully."
         });
-    }catch(error){
+    } catch (error) {
         return res.status(500).json({
             message: "An error occurred while deleting the content.",
             error: error instanceof Error ? error.message : "Unknown error"
         });
-    };
+    }
 };
 
 export const updateContentController = async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
-    const { title, description, url, type, Tags } = req.body;
+    const { title, description, url, type, tags } = req.body;
+
 
     try {
         const content = await Vault.findOne({
@@ -97,7 +110,7 @@ export const updateContentController = async (req: Request, res: Response): Prom
             userId: (req.user as TokenPayload).userId
         });
 
-        if(!content){
+        if (!content) {
             return res.status(404).json({
                 message: "Content not found."
             });
@@ -107,7 +120,7 @@ export const updateContentController = async (req: Request, res: Response): Prom
         content.description = description || content.description;
         content.url = url || content.url;
         content.type = type || content.type;
-        content.Tags = Tags || content.Tags;
+        content.tags = tags || content.tags;
 
         await content.save();
 
