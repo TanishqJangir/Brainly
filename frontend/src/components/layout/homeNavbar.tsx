@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "../ui/Button";
 import logo from "../../assets/logos/logo.svg";
-import Link from "../ui/Link";
 import SunIcon from "../../assets/svgIcons/SunIcon";
 import MoonIcon from "../../assets/svgIcons/MoonIcon";
 import { toggleTheme, isDarkMode } from "../../utils/toggleTheme";
@@ -13,17 +13,17 @@ const Navbar = () => {
 
     return (
         <div className="w-full h-17 bg-white/90 backdrop-blur-sm dark:bg-[#111111]/90 dark:backdrop-blur-sm flex justify-between items-center dark:text-white px-4 sm:px-8 md:px-12 lg:px-20 text-black border-b border-gray-200 dark:border-white/10 fixed left-1/2 -translate-x-1/2 z-30">
-            <Link href="/" className="flex items-center gap-2 cursor-pointer">
+            <Link to="/" className="flex items-center gap-2 cursor-pointer">
                 <div className="flex items-center justify-center w-7 h-7 md:h-9 md:w-9 bg-brand rounded-full">
                     <img src={logo} alt="Brainly Logo" className="md:size-6 size-4" />
                 </div>
                 <h1 className="md:text-2xl text-xl font-bold">Brainly</h1>
             </Link>
             <div className="hidden sm:flex lg:gap-15 gap-5 justify-center items-center text-sm md:text-base lg:text-lg">
-                <Link href="#" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Home</Link>
-                <Link href="#" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Preview</Link>
-                <Link href="#" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Features</Link>
-                <Link href="#" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Contact</Link>
+                <Link to="#" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Home</Link>
+                <Link to="#" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Preview</Link>
+                <Link to="#" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Features</Link>
+                <Link to="#" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Contact</Link>
             </div>
             <div className="flex gap-4 justify-center items-center">
             <button
