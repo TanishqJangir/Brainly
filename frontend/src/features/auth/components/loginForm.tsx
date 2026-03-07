@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 import GithubIcon from "../../../assets/svgIcons/GithubIcon";
@@ -9,6 +10,26 @@ import EyeSlashIcon from "../../../assets/svgIcons/EyeSlashIcon";
 
 const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+        try {
+            const { data } = await axios.post("http://localhost:8000/api/v1/auth/signin", { email, password });
+            localStorage.setItem("token", data.token);
+            navigate("/dashboard");
+        } catch (err: any) {
+            setError(err.response?.data?.message || "Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <div className="w-full max-w-md bg-white dark:bg-[#111118] border border-gray-100 dark:border-white/10 rounded-2xl shadow-md p-8 sm:p-10 select-none">
             {/* Header */}
@@ -18,13 +39,15 @@ const LoginForm = () => {
             </div>
 
             {/* Form */}
-            <form className="flex flex-col gap-4">
+            <form className="flex flex-col gap-4" onSubmit={handleLogin}>
                 <div className="flex flex-col gap-1">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
                     <Input
                         type="email"
                         placeholder="you@example.com"
                         required
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
                         className="bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-brand/50"
                     />
                 </div>
@@ -38,6 +61,8 @@ const LoginForm = () => {
                             type={showPassword ? "text" : "password"}
                             placeholder="••••••••"
                             required
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
                             className="bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-brand/50 pr-10!"
                         />
                         <button
@@ -50,12 +75,15 @@ const LoginForm = () => {
                     </div>
                 </div>
 
+                {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+
                 <Button
                     varient="primary"
                     className="w-full py-2.5! rounded-xl! font-semibold text-base mt-1"
-                    onClick={() => {}} //TODO: add login functionality
+                    onClick={() => {}}
+                    disabled={loading}
                 >
-                    Sign in
+                    {loading ? "Signing in..." : "Sign in"}
                 </Button>
             </form>
 
@@ -71,7 +99,9 @@ const LoginForm = () => {
                 <Button
                     varient="outline"
                     className="flex-1 py-2.5! rounded-xl! border-gray-200! dark:border-white/10 bg-white! dark:bg-white/5 hover:bg-gray-50! dark:hover:bg-white/10 text-sm! font-medium! text-gray-700! dark:text-gray-200 gap-3"
-                    onClick={() => {}}
+                    onClick={() => {
+                        window.open("http://localhost:8000/api/v1/auth/google", "_self");
+                    }}
                 >
                     <GoogleIcon />
                     Google
@@ -79,7 +109,9 @@ const LoginForm = () => {
                 <Button
                     varient="outline"
                     className="flex-1 py-2.5! rounded-xl! border-gray-200! dark:border-white/10 bg-white! dark:bg-white/5 hover:bg-gray-50! dark:hover:bg-white/10 text-sm! font-medium! text-gray-700! dark:text-gray-200 gap-3"
-                    onClick={() => {}}
+                    onClick={() => {
+                        window.open("http://localhost:8000/api/v1/auth/github", "_self");
+                    }}
                 >
                     <GithubIcon className="text-black!" />
                     GitHub
