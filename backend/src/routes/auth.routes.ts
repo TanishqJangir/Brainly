@@ -5,7 +5,6 @@ import { validate } from "../middlewares/validate.middleware";
 import { signupSchema, loginSchema } from "../validators/auth.validator";
 import passport from "passport";
 import { signToken } from "../utils/jwt";
-import { AuthUser } from "../types/express";
 import { env } from "../config/env";
 
 const router = express.Router();
