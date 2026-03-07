@@ -38,7 +38,7 @@ const VaultPreview = () => {
                 </div>
                 <Button
                     varient="ghost"
-                    className="group/btn flex gap-2 rounded-full! font-semibold p-0! text-sm md:text-lg transition-all duration-300 ease-in-out hover:bg-transparent dark:hover:text-gray-300"
+                    className="group/btn flex gap-2 rounded-full! font-semibold p-0! text-sm md:text-lg transition-all duration-300 ease-in-out hover:bg-transparent dark:hover:bg-transparent!"
                     onClick={() => { }} //TODO: Add functionality to navigate to the vault page
                 >
                     View All

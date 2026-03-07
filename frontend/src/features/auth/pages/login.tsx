@@ -1,11 +1,14 @@
+import AuthNavbar from "../components/authNavbar";
 import LoginForm from "../components/loginForm";
 
 const Login = () => {
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a] px-4">
-            <div className="w-full max-w-md bg-white dark:bg-[#111118] border border-gray-200 dark:border-white/10 rounded-2xl shadow-lg dark:shadow-brand/5 p-8 select-none">
+        <div className="h-screen flex flex-col bg-gray-50 dark:bg-[#0a0a0a] overflow-hidden">
+            <AuthNavbar />
+
+            <main className="flex-1 flex items-center justify-center px-4 overflow-y-auto">
                 <LoginForm />
-            </div>
+            </main>
         </div>
     );
 };

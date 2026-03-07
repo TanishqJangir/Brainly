@@ -5,7 +5,7 @@ import LinkdinIcon from "../../assets/svgIcons/LinkdinIcon";
 import TwitterIcon from "../../assets/svgIcons/TwitterIcon";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
-import Link from "../ui/Link";
+import { Link } from "react-router-dom";
 
 const HomePageFooter = () => {
     return (
@@ -46,16 +46,16 @@ const HomePageFooter = () => {
                             <h1 className="md:text-xl text-lg font-bold">Product</h1>
                         </div>
                         <div className="flex flex-col gap-2 items-start">
-                            <Link href="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
+                            <Link to="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
                                 Changelog
                             </Link>
-                            <Link href="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
+                            <Link to="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
                                 Browser Extension
                             </Link>
-                            <Link href="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
+                            <Link to="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
                                 Integrations
                             </Link>
-                            <Link href="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
+                            <Link to="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
                                 Desktop App
                             </Link>
                         </div>
@@ -70,16 +70,16 @@ const HomePageFooter = () => {
                             <h1 className="md:text-xl text-lg font-bold">Support</h1>
                         </div>
                         <div className="flex flex-col gap-2 items-start">
-                            <Link href="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
+                            <Link to="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
                                 Documentation
                             </Link>
-                            <Link href="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
+                            <Link to="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
                                 Contact Us
                             </Link>
-                            <Link href="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
+                            <Link to="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
                                 Privacy Policy
                             </Link>
-                            <Link href="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
+                            <Link to="#" className="hover:text-brand transition-colors duration-300 cursor-pointer">
                                 Terms of Service
                             </Link>
                         </div>
@@ -104,7 +104,7 @@ const HomePageFooter = () => {
                     </div>
                 </div>
             </div>
-            <div className="w-[86%] flex justify-between items-center border-t border-gray-400 dark:border-white/10 pt-6 text-[#949eb2] text-center text-sm">
+            <div className="w-[86%] flex justify-between items-center border-t border-gray-400 dark:border-white/10 pt-6 text-gray-500 text-center text-sm">
                 <p>© 2023 Your Company. All rights reserved.</p>
                 <p>Designed with precision for your digital brain.</p>
             </div>
