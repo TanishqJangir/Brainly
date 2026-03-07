@@ -23,7 +23,7 @@ const Navbar = () => {
                 <Link to="#" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Home</Link>
                 <Link to="#" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Preview</Link>
                 <Link to="#" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Features</Link>
-                <Link to="#" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Contact</Link>
+                <Link to="/dashboard" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Contact</Link>
             </div>
             <div className="flex gap-4 justify-center items-center">
             <button
