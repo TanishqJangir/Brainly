@@ -25,14 +25,14 @@ const Hero = () => {
                 </p>
                 <div className="flex md:gap-6 gap-4 md:justify-start justify-center items-center w-full">
                     <Button
-                        varient="primary"
+                        variant="primary"
                         className="rounded-3xl! font-semibold md:py-3 md:px-6 md:mt-4 py-1 px-4 mt-2 text-lg md:text-2xl hover:scale-104 transition-transform duration-300 ease-in-out cursor-pointer"
                         onClick={() => navigate("/signup")}
                     >
                         Get Started for Free
                     </Button>
                     <Button
-                        varient="secondary"
+                        variant="secondary"
                         className="flex gap-2 rounded-3xl! font-semibold md:py-3 md:px-6 md:mt-4 py-1 px-4 mt-2 md:text-2xl text-lg hover:scale-104 transition-transform duration-300 ease-in-out cursor-pointer"
                         onClick={() => { }} //TODO: Add functionality to navigate to the vault page
                     >

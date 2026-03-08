@@ -23,7 +23,7 @@ const AuthNavbar = () => {
             {/* Right side */}
             <div className="flex items-center gap-5">
                 <Button
-                    varient="ghost"
+                    variant="ghost"
                     onClick={() => navigate("/")}
                     className="text-md! text-gray-600! dark:text-gray-300! hover:text-gray-900! dark:hover:text-white! font-medium! gap-1.5 px-4! rounded-2xl!"
                 >

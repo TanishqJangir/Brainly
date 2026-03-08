@@ -10,6 +10,7 @@ import LinkIcon from "../../assets/svgIcons/LinkIcon";
 import AllIcon from "../../assets/svgIcons/AllIcon";
 import NotionIcon from "../../assets/svgIcons/NotionIcon";
 import SettingsIcon from "../../assets/svgIcons/SettingsIcon";
+import Settings from "../dashboard/components/settings";
 
 const navItems = [
     {
@@ -61,8 +62,16 @@ interface SidebarProps {
 const Sidebar = ({ collapsed = false }: SidebarProps) => {
     const location = useLocation();
     const [active, setActive] = useState(location.pathname);
+    const [settingsModal, setSettingsModal] = useState(false);
+
+    const clickSettings = () => {
+        setActive("/dashboard/settings");
+        setSettingsModal(true);
+    }
 
     return (
+        <>
+        {settingsModal && <Settings onOpen={settingsModal} onClose={setSettingsModal} />}
         <aside className={`h-screen flex flex-col bg-white dark:bg-[#111111] border-r border-gray-200 dark:border-white/10 select-none shrink-0 transition-all duration-300 overflow-hidden ${collapsed ? "w-16" : "w-60"}`}>
 
             {/* Logo + workspace */}
@@ -104,8 +113,8 @@ const Sidebar = ({ collapsed = false }: SidebarProps) => {
             {/* Bottom */}
             <div className="px-3 pb-4 flex flex-col gap-1 border-t border-gray-100 dark:border-white/10 pt-3">
                 <Link
-                    to="/"
-                    onClick={() => setActive("/dashboard/settings")}
+                    to="/dashboard/settings"
+                    onClick={clickSettings}
                     title={collapsed ? "Settings" : undefined}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150 ${collapsed ? "justify-center" : ""} ${
                         active === "/dashboard/settings"
@@ -131,6 +140,7 @@ const Sidebar = ({ collapsed = false }: SidebarProps) => {
                 </div>
             </div>
         </aside>
+        </>
     );
 };
 
