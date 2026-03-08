@@ -4,13 +4,7 @@ import { TokenPayload } from '../utils/jwt';
 import { Tag } from '../models/Tag.model';
 
 export const createContentController = async (req: Request, res: Response): Promise<any> => {
-    const { title, description, url, type, tags } = req.body;
-
-    if (!title || !url || !type) {
-        return res.status(400).json({
-            message: "Title, URL and Type are required fields."
-        });
-    }
+    const { title, description, url, type,customType, tags } = req.body;
 
     try {
         const existingContent = await Vault.findOne({ url, userId: (req.user as TokenPayload).userId });
@@ -26,6 +20,7 @@ export const createContentController = async (req: Request, res: Response): Prom
             description,
             url,
             type,
+            customType,
             tags,
             userId: (req.user as TokenPayload).userId
         });
@@ -101,7 +96,7 @@ export const deleteContentController = async (req: Request, res: Response): Prom
 
 export const updateContentController = async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
-    const { title, description, url, type, tags } = req.body;
+    const { title, description, url, type, customType, tags } = req.body;
 
 
     try {
@@ -120,6 +115,7 @@ export const updateContentController = async (req: Request, res: Response): Prom
         content.description = description || content.description;
         content.url = url || content.url;
         content.type = type || content.type;
+        content.customType = customType || content.customType;
         content.tags = tags || content.tags;
 
         await content.save();

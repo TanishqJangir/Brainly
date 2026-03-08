@@ -4,7 +4,7 @@ import { Input } from "../../../components/ui/Input"
 import { Card } from "./Card"
 
 
-export const EntityHeader = () => {
+export const EntityHeader = ({ modalOpen, setModalOpen }: { modalOpen: boolean; setModalOpen: (open: boolean) => void }) => {
     return (
         <div className="flex items-center justify-between px-6 pb-10">
             <div>
@@ -16,7 +16,7 @@ export const EntityHeader = () => {
                 <Button
                     varient="primary"
                     className="ml-4 rounded-full font-medium md:gap-2 gap-1 md:px-6 px-3 "
-                    onClick={() => {}}
+                    onClick={() => setModalOpen(!modalOpen)}
                 >
                     <PlusIcon className="size-5"/>
                     Add Content

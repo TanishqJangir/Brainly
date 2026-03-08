@@ -5,6 +5,7 @@ const VaultSchema = new Schema({
     description: { type: String },
     url: { type: String, required: true },
     type: { type: String, enum: ["youtube", "x", "notion", "linkedin", "instagram", "github", "other"], required: true },
+    customType: { type: String }, // For 'other' type
     tags: { type: [String],default:[], validate: [(v: string[]) => v.length <= 5, "Max 5 tags allowed"] },
     userId : { type: mongoose.Types.ObjectId, ref: "User", required: true },
 }, {
