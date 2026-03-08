@@ -91,7 +91,7 @@ const SignupForm = () => {
                 {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
                 <Button
-                    varient="primary"
+                    variant="primary"
                     className="w-full py-2.5! rounded-xl! font-semibold text-base mt-1"
                     onClick={() => {}}
                     disabled={loading}
@@ -110,7 +110,7 @@ const SignupForm = () => {
             {/* Social buttons */}
             <div className="flex gap-3">
                 <Button
-                    varient="outline"
+                    variant="outline"
                     className="flex-1 py-2.5! rounded-xl! border-gray-200! dark:border-white/10 bg-white! dark:bg-white/5 hover:bg-gray-50! dark:hover:bg-white/10 text-sm! font-medium! text-gray-700! dark:text-gray-200 gap-3"
                     onClick={() => { window.open("http://localhost:8000/api/v1/auth/google", "_self"); }}
                 >
@@ -118,7 +118,7 @@ const SignupForm = () => {
                     Google
                 </Button>
                 <Button
-                    varient="outline"
+                    variant="outline"
                     className="flex-1 py-2.5! rounded-xl! border-gray-200! dark:border-white/10 bg-white! dark:bg-white/5 hover:bg-gray-50! dark:hover:bg-white/10 text-sm! font-medium! text-gray-700! dark:text-gray-200 gap-3"
                     onClick={() => { window.open("http://localhost:8000/api/v1/auth/github", "_self"); }}
                 >

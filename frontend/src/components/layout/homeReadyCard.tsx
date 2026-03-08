@@ -12,7 +12,7 @@ const ReadyHomeCard = () => {
                 </div>
                 <div className="flex md:gap-5 gap-2">
                     <Button
-                    varient="primary" 
+                    variant="primary" 
                     className="bg-white text-brand! md:font-bold md:text-xl font-semibold md:px-6 md:py-4 px-3 py-2 rounded-full! hover:bg-gray-200 transition-all duration-300 hover:scale-[1.03]"
                     onClick={() => {}} //TODO: Add functionality to navigate to the sign up page
                     >
@@ -20,7 +20,7 @@ const ReadyHomeCard = () => {
                     </Button>
 
                     <Button
-                    varient="primary" 
+                    variant="primary" 
                     className="bg-white/10 backdrop-blur-sm border border-white/40 text-white! md:font-bold md:text-xl font-semibold md:px-8 md:py-4 px-3 py-2 rounded-full! transition-all duration-300 hover:bg-white/20"
                     onClick={() => {}} //TODO: Add functionality to navigate to the about page
                     >

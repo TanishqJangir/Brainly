@@ -40,14 +40,14 @@ const Navbar = () => {
             </button>
 
             <Button 
-            varient="ghost" 
+            variant="ghost" 
             className="rounded-2xl! px-8! font-semibold text-sm md:text-base dark:bg-[#181336]! dark:hover:bg-[#181336] dark:hover:text-brand bg-gray-200! hover:text-indigo-500 active:scale-95 active:brightness-90"
             onClick={() => navigate("/login")}
             >
                 Login
             </Button>
             <Button 
-            varient="primary" 
+            variant="primary" 
             className="rounded-2xl! md:px-6 px-3 text-sm md:text-base active:scale-95 active:brightness-90"
             onClick={() => navigate("/signup")}
             >

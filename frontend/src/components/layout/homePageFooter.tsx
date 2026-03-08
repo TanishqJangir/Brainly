@@ -96,7 +96,7 @@ const HomePageFooter = () => {
                             <div className="flex gap-2">
                                 <Input type="text" placeholder="Enter your email" className="active:outline-none dark:text-gray-300 text-black placeholder-gray-600" />
                                 <Button
-                                    varient="primary"
+                                    variant="primary"
                                     onClick={() => { }} //TODO: Add functionality to handle email subscription
                                 >Join</Button>
                             </div>

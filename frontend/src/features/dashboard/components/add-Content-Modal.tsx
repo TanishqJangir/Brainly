@@ -10,9 +10,9 @@ interface ModalProps {
 const fieldClass = "w-full";
 const labelClass = "block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300";
 const selectClass =
-    "w-full px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-[#1a1a24] text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand transition";
+    "w-full px-4 py-2 text-sm border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-[#1c1c1c] text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand transition";
 const textareaClass =
-    "w-full px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-[#1a1a24] text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand transition resize-none";
+    "w-full px-4 py-2 text-sm border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-[#1c1c1c] text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand transition resize-none";
 
 const AddContentModal = ({ setModalOpen }: ModalProps) => {
 
@@ -26,10 +26,12 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
 
 
     const handleSubmit = () => {
-        if (!title || !url || !contentType) {
+        if (!title || !url || !contentType ||!tags || (contentType === "other" && !customType)) { //change it later of tags
             alert("Please fill in all required fields.");
             return;
         }
+
+        
 
         setModalOpen(false);
     }
@@ -37,7 +39,7 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
 
     return (
         <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/60 backdrop-blur-sm">
-            <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white dark:bg-[#111117] dark:text-white rounded-2xl shadow-2xl px-8 py-8 mx-4 [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
+            <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white dark:bg-[#111111] dark:text-white rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 px-8 py-8 mx-4 [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
                 
                 <CrossIcon
                     onClick={() => setModalOpen(false)}
@@ -57,7 +59,7 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
                             placeholder="Enter title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="dark:bg-[#1a1a24] dark:text-white border-gray-300! dark:border-gray-600!"
+                            className="dark:bg-[#1c1c1c] dark:text-white border-gray-200! dark:border-white/10!"
                             required
                         />
                         <p className={`text-xs text-gray-400 text-right mt-1 leading-none ${title.length === 50 ? "text-red-400" : ""}`}>
@@ -73,7 +75,7 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
                             placeholder="https://example.com/..."
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
-                            className="dark:bg-[#1a1a24] dark:text-white border-gray-300! dark:border-gray-600!"
+                            className="dark:bg-[#1c1c1c] dark:text-white border-gray-200! dark:border-white/10!"
                             required
                         />
 
@@ -107,7 +109,7 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
                                 placeholder="Enter type"
                                 value={customType}
                                 onChange={(e) => setCustomType(e.target.value)}
-                                className="dark:bg-[#1a1a24] dark:text-white border-gray-300! dark:border-gray-600!"
+                                className="dark:bg-[#1c1c1c] dark:text-white border-gray-200! dark:border-white/10!"
                                 required
                             />
                             <p className={`text-xs text-gray-400 text-right mt-1 ${customType.length === 15 ? "text-red-400" : ""}`}>
@@ -130,7 +132,7 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
                                 }
                             }}
                             onBlur={() => setTags(tagsInput.split(",").map(tag => tag.trim()).filter(Boolean))}
-                            className="dark:bg-[#1a1a24] dark:text-white border-gray-300! dark:border-gray-600!"
+                            className="dark:bg-[#1c1c1c] dark:text-white border-gray-200! dark:border-white/10!"
                         />
                         <p className={`text-xs text-right mt-1 ${tagsInput.split(",").map(t => t.trim()).filter(Boolean).length >= 5 ? "text-red-400" : "text-gray-400"}`}>
                             {tagsInput ? tagsInput.split(",").map(t => t.trim()).filter(Boolean).length : 0}/5
@@ -152,10 +154,10 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
                     </div>
 
                     <div className="flex gap-3 mt-2">
-                        <Button varient="outline" onClick={() => setModalOpen(false)} className="flex-1">
+                        <Button variant="outline" onClick={() => setModalOpen(false)} className="flex-1">
                             Cancel
                         </Button>
-                        <Button varient="primary" onClick={handleSubmit} className="flex-1">
+                        <Button variant="primary" onClick={handleSubmit} className="flex-1">
                             Save
                         </Button>
                     </div>

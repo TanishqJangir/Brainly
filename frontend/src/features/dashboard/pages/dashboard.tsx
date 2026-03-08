@@ -1,19 +1,30 @@
-import { useState } from "react"
-import Sidebar from "../../common/sidebar"
-import { EntityHeader, EntityContainer } from "../components/entity-Components"
-import SidebarIcon from "../../../assets/svgIcons/SidebarIcon"
-import AddContentModal from "../components/add-Content-Modal"
+import { useState } from "react";
+import Sidebar from "../../common/sidebar";
+import { EntityHeader, EntityContainer } from "../components/entity-Components";
+import SidebarIcon from "../../../assets/svgIcons/SidebarIcon";
+import AddContentModal from "../components/add-Content-Modal";
+import CardModal from "../components/CardModal";
+import type { CardProps } from "../components/Card";
 
 
 const Dashboard = () => {
     const [collapsed, setCollapsed] = useState(false);
-    const [modalOpen, setModalOpen] = useState(false);
+    const [addContentmodalOpen, setAddContentModalOpen] = useState(false);
+    const [cardModalOpen, setCardModalOpen] = useState(false);
+
+    const [selectedCard, setSelectedCard] = useState<CardProps | null>(null);
+
+    const handleCardClick = (card: CardProps) => {
+        setSelectedCard(card);
+        setCardModalOpen(true);
+    };
 
 
     return (
         <div className="flex h-screen bg-gray-50 dark:bg-[#080808]">
-            {modalOpen && <AddContentModal setModalOpen={setModalOpen} />}
-            <div className="relative shrink-0">
+            {addContentmodalOpen && <AddContentModal setModalOpen={setAddContentModalOpen} />}
+            {cardModalOpen && selectedCard && <CardModal {...selectedCard} setModalOpen={setCardModalOpen} />}
+            <div className="relative shrink-0 z-30">
                 <Sidebar collapsed={collapsed} />
                 <button
                     onClick={() => setCollapsed(prev => !prev)}
@@ -23,9 +34,9 @@ const Dashboard = () => {
                     <SidebarIcon className="size-4" />
                 </button>
             </div>
-            <main className="flex-1 overflow-y-auto p-6">
-                <EntityHeader modalOpen={modalOpen} setModalOpen={setModalOpen} />
-                <EntityContainer />
+            <main className="flex-1 overflow-y-auto">
+                <EntityHeader setModalOpen={setAddContentModalOpen} />
+                <EntityContainer onCardClick={handleCardClick}/>
             </main>
         </div>
     )
