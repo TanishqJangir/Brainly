@@ -5,12 +5,12 @@ import {
     deleteContentController, 
     getContentsController 
 } from "../controllers/vault.controller";
-
 import { requireAuth } from "../middlewares/auth.middleware";
-
+import {createVaultSchema} from "../validators/vault.validator"
+import { validate } from "../middlewares/validate.middleware";
 const router = express.Router();
 
-router.post("/", requireAuth, createContentController);
+router.post("/", requireAuth, validate(createVaultSchema), createContentController);
 router.get("/", requireAuth, getContentsController);
 router.put("/:id", requireAuth, updateContentController);
 router.delete("/:id", requireAuth, deleteContentController);

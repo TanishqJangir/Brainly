@@ -2,13 +2,17 @@ import { useState } from "react"
 import Sidebar from "../../common/sidebar"
 import { EntityHeader, EntityContainer } from "../components/entity-Components"
 import SidebarIcon from "../../../assets/svgIcons/SidebarIcon"
+import AddContentModal from "../components/add-Content-Modal"
 
 
 const Dashboard = () => {
-    const [collapsed, setCollapsed] = useState(false)
+    const [collapsed, setCollapsed] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+
 
     return (
         <div className="flex h-screen bg-gray-50 dark:bg-[#080808]">
+            {modalOpen && <AddContentModal setModalOpen={setModalOpen} />}
             <div className="relative shrink-0">
                 <Sidebar collapsed={collapsed} />
                 <button
@@ -20,7 +24,7 @@ const Dashboard = () => {
                 </button>
             </div>
             <main className="flex-1 overflow-y-auto p-6">
-                <EntityHeader />
+                <EntityHeader modalOpen={modalOpen} setModalOpen={setModalOpen} />
                 <EntityContainer />
             </main>
         </div>
