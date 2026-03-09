@@ -7,6 +7,7 @@ import GoogleIcon from "../../../assets/svgIcons/GoogleIcon";
 import GithubIcon from "../../../assets/svgIcons/GithubIcon";
 import EyeIcon from "../../../assets/svgIcons/EyeIcon";
 import EyeSlashIcon from "../../../assets/svgIcons/EyeSlashIcon";
+import toast from "react-hot-toast";
 
 const SignupForm = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -24,9 +25,12 @@ const SignupForm = () => {
         try {
             const { data } = await axios.post("http://localhost:8000/api/v1/auth/signup", { name, email, password });
             localStorage.setItem("token", data.token);
+            toast.success("You are signed up successfully");
             navigate("/dashboard");
         } catch (err: any) {
-            setError(err.response?.data?.message || "Something went wrong. Please try again.");
+            toast.error(
+                err.response?.data?.message || "Something went wrong. Please try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -93,7 +97,7 @@ const SignupForm = () => {
                 <Button
                     variant="primary"
                     className="w-full py-2.5! rounded-xl! font-semibold text-base mt-1"
-                    onClick={() => {}}
+                    onClick={handleSignup}
                     disabled={loading}
                 >
                     {loading ? "Creating account..." : "Create Account"}

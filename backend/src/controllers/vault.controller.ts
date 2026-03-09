@@ -4,7 +4,7 @@ import { TokenPayload } from '../utils/jwt';
 import { Tag } from '../models/Tag.model';
 
 export const createContentController = async (req: Request, res: Response): Promise<any> => {
-    const { title, description, url, type,customType, tags } = req.body;
+    const { title, description, url, type, customType, tags } = req.body;
 
     try {
         const existingContent = await Vault.findOne({ url, userId: (req.user as TokenPayload).userId });

@@ -1,11 +1,16 @@
+import { useState } from "react";
 import CrossIcon from "../../../assets/svgIcons/CrossIcon";
-
+import MoonIcon from "../../../assets/svgIcons/MoonIcon";
+import SunIcon from "../../../assets/svgIcons/SunIcon";
+import { toggleTheme, isDarkMode } from "../../../utils/toggleTheme";
 
 
 const Settings = ({ onOpen, onClose }: {
     onOpen: boolean;
     onClose: (open: boolean) => void;
 }) => {
+
+    const [isDark, setIsDark] = useState(() => isDarkMode());
 
     if (!onOpen) return null;
     return (
@@ -20,7 +25,19 @@ const Settings = ({ onOpen, onClose }: {
                     <p className="text-gray-600">Here you can adjust your dashbord settings.</p>
                 </div>
                 <div>
-                    
+                    <button
+                    onClick={(e) => {
+                        toggleTheme(e.currentTarget);
+                        setIsDark(prev => !prev);
+                    }}
+                    className="cursor-pointer transition-all duration-300 hover:scale-110 p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20"
+                    aria-label="Toggle theme"
+                >
+                    {isDark
+                        ? <SunIcon className="size-5 text-gray-200" />
+                        : <MoonIcon className="size-5 text-gray-700" />
+                    }
+                </button>
                     
                 </div>
             </div>

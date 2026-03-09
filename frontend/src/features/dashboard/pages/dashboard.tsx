@@ -11,10 +11,10 @@ const Dashboard = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [addContentmodalOpen, setAddContentModalOpen] = useState(false);
     const [cardModalOpen, setCardModalOpen] = useState(false);
-
     const [selectedCard, setSelectedCard] = useState<CardProps | null>(null);
 
     const handleCardClick = (card: CardProps) => {
+        console.log("Selected card for Modal:", card)
         setSelectedCard(card);
         setCardModalOpen(true);
     };
