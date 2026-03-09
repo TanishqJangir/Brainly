@@ -30,7 +30,6 @@ const AuthNavbar = () => {
                     Home
                 </Button>
 
-                {/* Theme toggle */}
                 <button
                     onClick={(e) => {
                         toggleTheme(e.currentTarget);

@@ -1,7 +1,10 @@
+import axios from "axios";
 import CrossIcon from "../../../assets/svgIcons/CrossIcon";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 import { useState } from "react";
+import { ButtonLoader } from "./entity-Components";
+import { toast } from "react-hot-toast";
 
 interface ModalProps {
     setModalOpen: (open: boolean) => void;
@@ -23,24 +26,66 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
     const [tags, setTags] = useState<string[]>([]);
     const [tagsInput, setTagsInput] = useState("");
     const [description, setDescription] = useState("");
+    const [loading, setLoading] = useState(false);
 
 
-    const handleSubmit = () => {
-        if (!title || !url || !contentType ||!tags || (contentType === "other" && !customType)) { //change it later of tags
+    const handleSubmit = async () => {
+        if (loading) return;
+        setLoading(true);
+
+        if (!title || !url || !contentType || (contentType === "other" && !customType)) { //change it later of tags
             alert("Please fill in all required fields.");
+            setLoading(false);
             return;
         }
 
-        
+        try {
+            const token = localStorage.getItem("token");
+            console.log(token);
+            const response = await axios.post("http://localhost:8000/api/v1/vault", {
+                title,
+                description,
+                url,
+                type: contentType === "other" ? "other" : contentType,
+                customType: contentType === "other" ? customType : undefined,
+                tags,
+            },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            console.log("below response")
+            const data = response.data;
+            console.log(data)
 
-        setModalOpen(false);
-    }
+            toast.success(data.message, {
+                duration: 4000,
+                icon: null
+            });
+            console.log("Content added successfully:")
+            setLoading(false);
+            setModalOpen(false);
+        } catch (error: any) {
+            console.log(error.response?.data.errors);
 
+            const message =
+                error?.response?.data?.errors[0]?.message ||
+                "An error occurred while adding content.";
+
+            toast.error(message, {
+                duration: 4000,
+                icon: null
+            });
+
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/60 backdrop-blur-sm">
             <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white dark:bg-[#111111] dark:text-white rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 px-8 py-8 mx-4 [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
-                
+
                 <CrossIcon
                     onClick={() => setModalOpen(false)}
                     className="size-5 absolute top-4 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-white transition cursor-pointer rounded-md" />
@@ -92,7 +137,7 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
                         >
                             <option value="" disabled>Select type</option>
                             <option value="youtube">YouTube</option>
-                            <option value="twitter">X (Twitter)</option>
+                            <option value="x">X (Twitter)</option>
                             <option value="notion">Notion</option>
                             <option value="linkedin">LinkedIn</option>
                             <option value="instagram">Instagram</option>
@@ -158,7 +203,7 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
                             Cancel
                         </Button>
                         <Button variant="primary" onClick={handleSubmit} className="flex-1">
-                            Save
+                            {loading ? <ButtonLoader /> : "Add Content"}
                         </Button>
                     </div>
                 </form>
@@ -166,7 +211,6 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
         </div>
     );
 };
-
 
 
 export default AddContentModal;

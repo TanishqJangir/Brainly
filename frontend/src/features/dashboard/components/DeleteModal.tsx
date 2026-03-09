@@ -1,10 +1,54 @@
+import axios from "axios";
 import { Button } from "../../../components/ui/Button";
+import toast from "react-hot-toast";
 
 
-const DeleteModal = ({onOpen, onClose } : {
-    onOpen?: boolean;
-    onClose: (open: boolean) => void;
+const DeleteModal = ({ onOpen, onClose, contentId, setModalOpen, onDelete }: {
+  onOpen?: boolean;
+  onClose: (open: boolean) => void;
+  contentId: string;
+  setModalOpen?: (open: boolean) => void;
+  onDelete?: (id:string) => void;
 }) => {
+
+  const deleteContent = async () => {
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(`http://localhost:8000/api/v1/vault/${contentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = response.data;
+
+      toast.success(data.message || "Deleted the content successfully.",{
+        duration: 3000,
+        icon: null,
+      });
+
+      if (onDelete) {
+        onDelete(contentId);
+      }
+
+      onClose(false);
+
+      if(setModalOpen) {
+        setModalOpen(false);
+      }
+
+    } catch (error: any) {
+
+      console.error("Error deleting content:", error);
+      
+      error.response?.data?.message
+        ? toast.error(error.response.data.message)
+        : toast.error("Failed to delete content. Please try again.");
+    }
+  }
+
+
   if (!onOpen) return null;
   return (
     <div className="fixed inset-0 z-51 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -15,7 +59,7 @@ const DeleteModal = ({onOpen, onClose } : {
         </p>
         <div className="flex gap-4 w-full justify-end">
           <Button variant="open" onClick={() => onClose(false)} className="rounded-xl">Cancel</Button>
-          <Button variant="delete" onClick={() => onClose(false)} className="rounded-xl">Confirm</Button>
+          <Button variant="delete" onClick={deleteContent} className="rounded-xl">Confirm</Button>
         </div>
       </div>
     </div>
