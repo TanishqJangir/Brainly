@@ -4,7 +4,20 @@ import { Button } from "../../../components/ui/Button"
 import { Input } from "../../../components/ui/Input"
 import { Card, type CardProps } from "./Card"
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
+const BACKEND_URL = import.meta.env.BACKEND_URL || "http://localhost:8000";
+
+// Maps sidebar route segments → card type values
+const routeToType: Record<string, CardProps["type"]> = {
+    youtube: "youtube",
+    twitter: "x",
+    notion: "notion",
+    linkedin: "linkedin",
+    instagram: "instagram",
+    github: "github",
+    other: "other",
+};
 
 export const EntityHeader = ({ setModalOpen }: { setModalOpen: (open: boolean) => void }) => {
     return (
@@ -33,17 +46,26 @@ export const EntityContainer = ({ onCardClick }: { onCardClick: (card: CardProps
 
     const [contents, setContents] = useState<CardProps[]>([]);
     const [loading, setLoading] = useState(false);
+    const location = useLocation();
+
+    // Derive active type filter from URL: /dashboard/linkedin → "linkedin"
+    const routeSegment = location.pathname.split("/")[2]; // undefined for /dashboard
+    const activeType = routeSegment ? routeToType[routeSegment] : undefined;
+
+    const filteredContents = activeType
+        ? contents.filter(c => c.type === activeType)
+        : contents;
 
     async function fetchContents() {
         try {
             setLoading(true);
             const token = localStorage.getItem("token");
-            const response = await axios.get("http://localhost:8000/api/v1/vault", {
+            const response = await axios.get(`${BACKEND_URL}/api/v1/vault`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            setContents(prev => [...prev, ...response.data.contents]);
+            setContents(response.data.contents);
         } catch (error) {
             console.error("Error fetching contents:", error);
         } finally {
@@ -59,14 +81,14 @@ export const EntityContainer = ({ onCardClick }: { onCardClick: (card: CardProps
     if(loading) {
         return <EntityLoadingState />
     }
-    if(contents.length === 0) {
-        return <EntityEmptyState /> 
+    if(filteredContents.length === 0) {
+        return <EntityEmptyState type={activeType} />
     }
 
 
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-6 py-4">
-            {contents.map((content: any) => (
+            {filteredContents.map((content: any) => (
                 <Card
                     key={content.url}
                     contentId={content._id}
@@ -88,12 +110,14 @@ export const EntityContainer = ({ onCardClick }: { onCardClick: (card: CardProps
     );
 }
 
-export const EntityEmptyState = () => {
+export const EntityEmptyState = ({ type }: { type?: string }) => {
     return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] w-full text-center">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">No content found</h2>
             <p className="text-gray-500 dark:text-gray-400 mt-2">
-                Get started by adding your first piece of content.
+                {type
+                    ? `You have no ${type} content yet. Add some!`
+                    : "Get started by adding your first piece of content."}
             </p>
         </div>
     );

@@ -50,7 +50,7 @@ const navItems = [
     },
     {
         label: "Other Links",
-        to: "/dashboard/links",
+        to: "/dashboard/other",
         icon: <LinkIcon className="size-5.5" />,
     },
 ];
