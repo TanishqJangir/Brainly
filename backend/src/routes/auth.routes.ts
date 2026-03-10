@@ -1,5 +1,5 @@
 import express from "express";
-import { SignupController, SigninController, meController } from "../controllers/user.controller";
+import { SignupController, SigninController, meController, VerifyOtpController, GenerateOtpController } from "../controllers/user.controller";
 import { requireAuth } from "../middlewares/auth.middleware";
 import { validate } from "../middlewares/validate.middleware";
 import { signupSchema, loginSchema } from "../validators/auth.validator";
@@ -44,6 +44,8 @@ router.get("/github/callback", passport.authenticate("github", { session: false,
 
 router.post("/signup", validate(signupSchema), SignupController);
 router.post("/signin", validate(loginSchema), SigninController);
+router.post("/generate-otp", GenerateOtpController);
+router.post("/verify-otp", VerifyOtpController);
 router.get("/me", requireAuth, meController);
 
 

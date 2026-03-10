@@ -15,6 +15,8 @@ const envSchema = z.object({
   GITHUB_CLIENT_SECRET: z.string(),
   GITHUB_CALLBACK_URL: z.string().url(),
   CLIENT_URL: z.string().url().default("http://localhost:5173"),
+  EMAIL_USER: z.string().email(),
+  EMAIL_PASS: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -5,6 +5,8 @@ import Signup from "./features/auth/pages/signup";
 import Dashboard from "./features/dashboard/pages/dashboard";
 import OAuthCallback from "./features/auth/pages/oauthCallback";
 import { Toaster } from "react-hot-toast";
+import ProtectedRoute from "./features/auth/routes/ProtectedRoute";
+import PublicRoute from "./features/auth/routes/PublicRoute";
 
 function App() {
   return (
@@ -17,11 +19,38 @@ function App() {
         }}
       />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard/*" element={<Dashboard />} />
+
+        <Route path="/" element={
+          <PublicRoute>
+            <Home />
+          </PublicRoute>
+        } />
+
+
+        <Route path="/login" element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        } />
+
+
+        <Route path="/signup" element={
+          <PublicRoute>
+            <Signup />
+          </PublicRoute>
+        } />
+
+
+        <Route path="/dashboard/*" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+
+
         <Route path="/auth-success" element={<OAuthCallback />} />
+
+
       </Routes>
     </BrowserRouter>
   );

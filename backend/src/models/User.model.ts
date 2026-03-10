@@ -7,7 +7,7 @@ const UserSchema = new Schema({
     provider: { type: String, enum: ["local", "google", "github"], default: "local" },
     providerId: { type: String },
     avatar: { type: String },
-    isEmailVarified: { type: Boolean, default: false },
+    isEmailVerified: { type: Boolean, default: false },
     otp: { type: String, default: null },
     otpExpiry: { type: Date, default: null },
     shareLink: {type: String, unique:true, default: null},
