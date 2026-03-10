@@ -20,39 +20,39 @@ const Navbar = () => {
                 <h1 className="md:text-2xl text-xl font-bold">Brainly</h1>
             </Link>
             <div className="hidden sm:flex lg:gap-15 gap-5 justify-center items-center text-sm md:text-base lg:text-lg">
-                <Link to="#" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Home</Link>
-                <Link to="#" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Preview</Link>
-                <Link to="#" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Features</Link>
-                <Link to="/dashboard" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Contact</Link>
+                <a href="#home" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Home</a>
+                <a href="#vault-preview" className="dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Preview</a>
+                <a href="#features" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Features</a>
+                <a href="#footer" className="hidden md:inline dark:text-gray-300 font-medium dark:hover:text-white hover:text-brand transition">Contact</a>
             </div>
             <div className="flex gap-4 justify-center items-center">
-            <button
-                onClick={(e) => {
-                    toggleTheme(e.currentTarget);
-                    setIsDark(prev => !prev);
-                }}
-                className="cursor-pointer transition-all duration-300 hover:scale-110 p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20"
-            >
-                {isDark
-                    ? <SunIcon className="size-5 text-gray-200" />
-                    : <MoonIcon className="size-5 text-gray-700" />
-                }
-            </button>
+                <button
+                    onClick={(e) => {
+                        toggleTheme(e.currentTarget);
+                        setIsDark(prev => !prev);
+                    }}
+                    className="cursor-pointer transition-all duration-300 hover:scale-110 p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20"
+                >
+                    {isDark
+                        ? <SunIcon className="size-5 text-gray-200" />
+                        : <MoonIcon className="size-5 text-gray-700" />
+                    }
+                </button>
 
-            <Button 
-            variant="ghost" 
-            className="rounded-2xl! px-8! font-semibold text-sm md:text-base dark:bg-[#181336]! dark:hover:bg-[#181336] dark:hover:text-brand bg-gray-200! hover:text-indigo-500 active:scale-95 active:brightness-90"
-            onClick={() => navigate("/login")}
-            >
-                Login
-            </Button>
-            <Button 
-            variant="primary" 
-            className="rounded-2xl! md:px-6 px-3 text-sm md:text-base active:scale-95 active:brightness-90"
-            onClick={() => navigate("/signup")}
-            >
-                Get Started
-            </Button>
+                <Button
+                    variant="ghost"
+                    className="rounded-2xl! px-8! font-semibold text-sm md:text-base dark:bg-[#181336]! dark:hover:bg-[#181336] dark:hover:text-brand bg-gray-200! hover:text-indigo-500 active:scale-95 active:brightness-90"
+                    onClick={() => navigate("/login")}
+                >
+                    Login
+                </Button>
+                <Button
+                    variant="primary"
+                    className="rounded-2xl! md:px-6 px-3 text-sm md:text-base active:scale-95 active:brightness-90"
+                    onClick={() => navigate("/signup")}
+                >
+                    Get Started
+                </Button>
             </div>
         </div>
     );

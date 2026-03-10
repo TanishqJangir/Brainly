@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import RightArrow from "../../assets/svgIcons/RightArrow";
 import { Button } from "../ui/Button";
 
@@ -27,8 +28,9 @@ const fixedCards = [
 ];
 
 const VaultPreview = () => {
+    const navigate = useNavigate();
     return (
-        <div className="w-full h-screen dark:bg-[#080808] flex flex-col px-6 sm:px-12 lg:px-24 py-8 gap-8 border border-gray-200 dark:border-white/10">
+        <div id="vault-preview" className="w-full h-screen dark:bg-[#080808] flex flex-col px-6 sm:px-12 lg:px-24 py-8 gap-8 border border-gray-200 dark:border-white/10">
             <div className="flex justify-between items-start mt-15">
                 <div className="flex flex-col gap-1">
                     <h1 className="text-2xl md:text-4xl font-bold dark:text-white text-black select-none" style={{ fontFamily: 'Inter, sans-serif' }}>The Vault Preview</h1>
@@ -39,7 +41,7 @@ const VaultPreview = () => {
                 <Button
                     variant="ghost"
                     className="group/btn flex gap-2 rounded-full! font-semibold p-0! text-sm md:text-lg transition-all duration-300 ease-in-out hover:bg-transparent dark:hover:bg-transparent!"
-                    onClick={() => { }} //TODO: Add functionality to navigate to the vault page
+                    onClick={() => {navigate("/login")}} //TODO: Add functionality to navigate to the vault page
                 >
                     View All
                     <RightArrow className="md:size-7 size-4 mt-1 transition-transform duration-300 ease-in-out group-hover/btn:translate-x-1.5" />

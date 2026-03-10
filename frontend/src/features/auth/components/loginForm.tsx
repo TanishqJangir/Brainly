@@ -8,24 +8,35 @@ import GoogleIcon from "../../../assets/svgIcons/GoogleIcon";
 import EyeIcon from "../../../assets/svgIcons/EyeIcon";
 import EyeSlashIcon from "../../../assets/svgIcons/EyeSlashIcon";
 
+const BACKEND_URL = import.meta.env.BACKEND_URL || "http://localhost:8000";
+
 const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
+        setEmailError("");
+        setPasswordError("");
         setLoading(true);
         try {
-            const { data } = await axios.post("http://localhost:8000/api/v1/auth/signin", { email, password });
+            const { data } = await axios.post(`${BACKEND_URL}/api/v1/auth/signin`, { email, password });
             localStorage.setItem("token", data.token);
             navigate("/dashboard");
         } catch (err: any) {
-            setError(err.response?.data?.message || "Something went wrong. Please try again.");
+            const message: string = err.response?.data?.message || "Something went wrong. Please try again.";
+            const lower = message.toLowerCase();
+            if (lower.includes("password")) {
+                setPasswordError(message);
+            } else {
+                setEmailError(message);
+            }
         } finally {
             setLoading(false);
         }
@@ -50,6 +61,7 @@ const LoginForm = () => {
                         onChange={e => setEmail(e.target.value)}
                         className="bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-brand/50"
                     />
+                    {emailError && <p className="text-xs text-red-500 mt-0.5">{emailError}</p>}
                 </div>
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
@@ -73,14 +85,13 @@ const LoginForm = () => {
                             {showPassword ? <EyeSlashIcon className="size-4" /> : <EyeIcon className="size-4" />}
                         </button>
                     </div>
+                    {passwordError && <p className="text-xs text-red-500 mt-0.5">{passwordError}</p>}
                 </div>
 
-                {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-
                 <Button
+                    type="submit"
                     variant="primary"
                     className="w-full py-2.5! rounded-xl! font-semibold text-base mt-1"
-                    onClick={() => {}}
                     disabled={loading}
                 >
                     {loading ? "Signing in..." : "Sign in"}
@@ -100,7 +111,7 @@ const LoginForm = () => {
                     variant="outline"
                     className="flex-1 py-2.5! rounded-xl! border-gray-200! dark:border-white/10 bg-white! dark:bg-white/5 hover:bg-gray-50! dark:hover:bg-white/10 text-sm! font-medium! text-gray-700! dark:text-gray-200 gap-3"
                     onClick={() => {
-                        window.open("http://localhost:8000/api/v1/auth/google", "_self");
+                        window.open(`${BACKEND_URL}/api/v1/auth/google`, "_self");
                     }}
                 >
                     <GoogleIcon />
@@ -110,7 +121,7 @@ const LoginForm = () => {
                     variant="outline"
                     className="flex-1 py-2.5! rounded-xl! border-gray-200! dark:border-white/10 bg-white! dark:bg-white/5 hover:bg-gray-50! dark:hover:bg-white/10 text-sm! font-medium! text-gray-700! dark:text-gray-200 gap-3"
                     onClick={() => {
-                        window.open("http://localhost:8000/api/v1/auth/github", "_self");
+                        window.open(`${BACKEND_URL}/api/v1/auth/github`, "_self");
                     }}
                 >
                     <GithubIcon className="text-black!" />

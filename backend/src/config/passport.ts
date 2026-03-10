@@ -30,7 +30,7 @@ passport.use(new GoogleStrategy({
                 password: "",
                 provider: "google",
                 providerId: profile.id,
-                isEmailVarified: true,
+                isEmailVerified: true,
             })
         }
 
@@ -61,7 +61,7 @@ passport.use(new GitHubStrategy({
                 password: "",
                 provider: "github",
                 providerId: profile.id,
-                isEmailVarified: true,
+                isEmailVerified: true,
             })
         }
 

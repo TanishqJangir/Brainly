@@ -1,6 +1,6 @@
 interface ButtonProps {
     children?: React.ReactNode;
-    onClick: ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | (() => void);
+    onClick?: ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | (() => void);
     className?: string;
     disabled?: boolean;
     variant: "primary" | "secondary" | "ghost" | "outline" | "delete" | "open" | "custom";

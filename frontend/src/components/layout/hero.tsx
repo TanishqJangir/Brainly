@@ -7,7 +7,7 @@ import { Button } from "../ui/Button";
 const Hero = () => {
     const navigate = useNavigate();
     return (
-        <div className="w-full h-screen flex justify-center items-center text-center px-23 bg-transparent dark:text-white text-black select-none border-b border-gray-200 dark:border-white/10">
+        <div id="home" className="w-full h-screen flex justify-center items-center text-center px-23 bg-transparent dark:text-white text-black select-none border-b border-gray-200 dark:border-white/10">
 
             <div className="flex flex-col justify-start items-start md:gap-5 gap-3">
                 <p className="flex items-center gap-2 text-brand text-sm dark:border-brand border-gray-300 border-2 md:px-5 px-3 md:py-1 rounded-full font-bold bg-[#e6e3f9] dark:bg-[#1c1340]">
@@ -34,7 +34,9 @@ const Hero = () => {
                     <Button
                         variant="secondary"
                         className="flex gap-2 rounded-3xl! font-semibold md:py-3 md:px-6 md:mt-4 py-1 px-4 mt-2 md:text-2xl text-lg hover:scale-104 transition-transform duration-300 ease-in-out cursor-pointer"
-                        onClick={() => { }} //TODO: Add functionality to navigate to the vault page
+                        onClick={() => {
+                            document.getElementById("vault-preview")?.scrollIntoView({ behavior: "smooth" });
+                        }}
                     >
                         <PlayCircleIcon className="md:size-7 size-5 text-brand" />
                         Vault Preview

@@ -3,6 +3,9 @@ import CrossIcon from "../../../assets/svgIcons/CrossIcon";
 import MoonIcon from "../../../assets/svgIcons/MoonIcon";
 import SunIcon from "../../../assets/svgIcons/SunIcon";
 import { toggleTheme, isDarkMode } from "../../../utils/toggleTheme";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../../components/ui/Button";
 
 
 const Settings = ({ onOpen, onClose }: {
@@ -11,6 +14,14 @@ const Settings = ({ onOpen, onClose }: {
 }) => {
 
     const [isDark, setIsDark] = useState(() => isDarkMode());
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        toast.success("Logged out successfully!");
+        navigate("/login");
+
+    }
 
     if (!onOpen) return null;
     return (
@@ -38,6 +49,13 @@ const Settings = ({ onOpen, onClose }: {
                         : <MoonIcon className="size-5 text-gray-700" />
                     }
                 </button>
+
+                <Button 
+                    variant="delete"
+                    onClick={handleLogout}
+                >
+                    Logout
+                </Button>
                     
                 </div>
             </div>
