@@ -13,6 +13,7 @@ const Dashboard = () => {
     const [cardModalOpen, setCardModalOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState<CardProps | null>(null);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [searchQuery, setSearchQuery] = useState("");
     const refresh = () => setRefreshKey(k => k + 1);
 
 
@@ -38,8 +39,8 @@ const Dashboard = () => {
                 </button>
             </div>
             <main className="flex-1 overflow-y-auto">
-                <EntityHeader setModalOpen={setAddContentModalOpen} />
-                <EntityContainer onCardClick={handleCardClick} refreshKey={refreshKey} onSuccess={refresh} />
+                <EntityHeader setModalOpen={setAddContentModalOpen} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                <EntityContainer onCardClick={handleCardClick} refreshKey={refreshKey} onSuccess={refresh} searchQuery={searchQuery} />
             </main>
         </div>
     )

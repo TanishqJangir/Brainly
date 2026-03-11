@@ -17,7 +17,7 @@ const routeToType: Record<string, CardProps["type"]> = {
     other: "other",
 };
 
-export const EntityHeader = ({ setModalOpen }: { setModalOpen: (open: boolean) => void }) => {
+export const EntityHeader = ({ setModalOpen, searchQuery, setSearchQuery }: { setModalOpen: (open: boolean) => void, searchQuery: string, setSearchQuery: (query: string) => void }) => {
     return (
         <div className="sticky top-0 left-0 w-full z-20 bg-white dark:bg-[#151515] flex items-center justify-between px-6 py-4">
             <div>
@@ -25,7 +25,7 @@ export const EntityHeader = ({ setModalOpen }: { setModalOpen: (open: boolean) =
                 <p className="text-sm text-gray-500 dark:text-gray-400">Manage and organize your digital assets</p>
             </div>
             <div className="flex items-center">
-                <Input type="text" placeholder="Search your vault..." className="w-72! rounded-full! py-2.5 dark:text-white text-black " />
+                <Input type="text" placeholder="Search your vault..." className="w-72! rounded-full! py-2.5 dark:text-white text-black " value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 <Button
                     variant="primary"
                     className="ml-4 rounded-full font-medium md:gap-2 gap-1 md:px-6 px-3 "
@@ -40,10 +40,11 @@ export const EntityHeader = ({ setModalOpen }: { setModalOpen: (open: boolean) =
 };
 
 
-export const EntityContainer = ({ onCardClick, refreshKey, onSuccess }: {
+export const EntityContainer = ({ onCardClick, refreshKey, onSuccess, searchQuery }: {
     onCardClick: (card: CardProps) => void;
     refreshKey: number;
     onSuccess: () => void;
+    searchQuery: string;
 }) => {
 
     const [contents, setContents] = useState<CardProps[]>([]);
@@ -54,9 +55,19 @@ export const EntityContainer = ({ onCardClick, refreshKey, onSuccess }: {
     const routeSegment = location.pathname.split("/")[2]; // undefined for /dashboard
     const activeType = routeSegment ? routeToType[routeSegment] : undefined;
 
-    const filteredContents = activeType
-        ? contents.filter(c => c.type === activeType)
-        : contents;
+    const filteredContents = contents.filter(c => {
+        const matchesType = activeType ? c.type === activeType : true;
+        
+        let matchesSearch = true;
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            const titleMatches = c.title?.toLowerCase().includes(query);
+            const tagMatches = c.tags?.some((t: string) => t.toLowerCase().includes(query));
+            matchesSearch = !!(titleMatches || tagMatches);
+        }
+
+        return matchesType && matchesSearch;
+    });
 
     async function fetchContents() {
         try {
