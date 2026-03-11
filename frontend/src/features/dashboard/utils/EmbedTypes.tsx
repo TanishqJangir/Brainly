@@ -129,6 +129,27 @@ export const EmbedLinks = ({ type, customType, url }: {
         );
     }
 
+    // Fallback for "link" and any other type
+    let hostname = url;
+    try { hostname = new URL(url).hostname.replace('www.', ''); } catch {}
+
+    return (
+        <div className="w-full aspect-video rounded-xl flex flex-col items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 px-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="size-10 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4A4 4 0 0015.172 4.34l-1.1 1.1" />
+            </svg>
+            <p className="text-sm font-medium truncate max-w-full px-2">{hostname}</p>
+            <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                className="text-xs px-4 py-1.5 rounded-lg bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/20 transition"
+            >
+                Visit Link
+            </a>
+        </div>
+    );
 }
 
 

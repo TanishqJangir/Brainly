@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 
 interface ModalProps {
     setModalOpen: (open: boolean) => void;
+    onSuccess : () => void;
 }
 
 const fieldClass = "w-full";
@@ -17,7 +18,7 @@ const selectClass =
 const textareaClass =
     "w-full px-4 py-2 text-sm border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-[#1c1c1c] text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand transition resize-none";
 
-const AddContentModal = ({ setModalOpen }: ModalProps) => {
+const AddContentModal = ({ setModalOpen, onSuccess }: ModalProps) => {
 
     const [title, setTitle] = useState("");
     const [url, setUrl] = useState("");
@@ -65,6 +66,7 @@ const AddContentModal = ({ setModalOpen }: ModalProps) => {
             });
             console.log("Content added successfully:")
             setLoading(false);
+            onSuccess();
             setModalOpen(false);
         } catch (error: any) {
             console.log(error.response?.data.errors);

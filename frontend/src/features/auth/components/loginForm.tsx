@@ -8,7 +8,7 @@ import GoogleIcon from "../../../assets/svgIcons/GoogleIcon";
 import EyeIcon from "../../../assets/svgIcons/EyeIcon";
 import EyeSlashIcon from "../../../assets/svgIcons/EyeSlashIcon";
 
-const BACKEND_URL = import.meta.env.BACKEND_URL || "http://localhost:8000";
+const BACKEND_URL = "http://localhost:8000";
 
 const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false);

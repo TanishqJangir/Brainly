@@ -4,6 +4,7 @@ import Login from "./features/auth/pages/login";
 import Signup from "./features/auth/pages/signup";
 import Dashboard from "./features/dashboard/pages/dashboard";
 import OAuthCallback from "./features/auth/pages/oauthCallback";
+import { SharedVault } from "./pages/SharedVault";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./features/auth/routes/ProtectedRoute";
 import PublicRoute from "./features/auth/routes/PublicRoute";
@@ -49,6 +50,8 @@ function App() {
 
 
         <Route path="/auth-success" element={<OAuthCallback />} />
+
+        <Route path="/share/:shareLink" element={<SharedVault />} />
 
 
       </Routes>
