@@ -45,7 +45,7 @@ export const SharedVault = () => {
     if (error || !data) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] flex items-center justify-center">
-                 <div className="flex flex-col items-center gap-4 text-center max-w-sm px-4">
+                <div className="flex flex-col items-center gap-4 text-center max-w-sm px-4">
                     <div className="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-500/10 flex items-center justify-center mb-2">
                         <span className="text-2xl">🚫</span>
                     </div>
@@ -69,13 +69,13 @@ export const SharedVault = () => {
                     contentId={selectedItem._id}
                     title={selectedItem.title}
                     description={selectedItem.description}
-                    url={selectedItem.link}
+                    url={selectedItem.url}
                     type={selectedItem.type}
                     customType={selectedItem.customType}
                     tags={selectedItem.tags || []}
                     createdAt={selectedItem.createdAt}
                     setModalOpen={() => setSelectedItem(null)}
-                    onSuccess={() => {}}
+                    onSuccess={() => { }}
                     isViewer={true}
                 />
             )}
@@ -91,7 +91,7 @@ export const SharedVault = () => {
                 </Link>
 
                 <div className="flex items-center gap-6">
-                     <div className="hidden sm:flex items-center gap-3">
+                    <div className="hidden sm:flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-white text-xs font-bold shrink-0">
                             {data.avatar ? (
                                 <img src={data.avatar} alt="Avatar" className="size-8 rounded-full" />
@@ -103,7 +103,7 @@ export const SharedVault = () => {
                             {data.name}'s Vault
                         </span>
                     </div>
-                
+
                     <button
                         onClick={(e) => {
                             const iconEl = e.currentTarget.querySelector('span');
@@ -127,7 +127,7 @@ export const SharedVault = () => {
             {/* Content Display */}
             <main className="max-w-7xl mx-auto px-6 pt-8">
                 <div className="mb-8 sm:hidden flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white text-sm font-bold shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white text-sm font-bold shrink-0">
                         {data.avatar ? (
                             <img src={data.avatar} alt="Avatar" className="size-10 rounded-full" />
                         ) : (
@@ -153,13 +153,13 @@ export const SharedVault = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start">
                         {data.contents.map((item) => (
-                            <Card 
-                                key={item._id} 
+                            <Card
+                                key={item._id}
                                 _id={item._id}
                                 contentId={item._id}
-                                title={item.title} 
-                                url={item.link} 
-                                type={item.type} 
+                                title={item.title}
+                                url={item.url}
+                                type={item.type}
                                 tags={item.tags || []}
                                 createdAt={item.createdAt}
                                 isViewer={true}

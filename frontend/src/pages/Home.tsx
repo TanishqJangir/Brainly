@@ -7,16 +7,16 @@ import HomePageFooter from "../components/layout/homePageFooter";
 
 
 const Home = () => {
-    return (
-        <div>
+  return (
+    <div>
       <Navbar />
       <Hero />
-      <ValultPreview/>
-      <Features/>
+      <ValultPreview />
+      <Features />
       <ReadyHomeCard />
       <HomePageFooter />
     </div>
-    )
+  )
 }
 
 export default Home;

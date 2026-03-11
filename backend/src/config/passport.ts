@@ -15,31 +15,31 @@ passport.use(new GoogleStrategy({
     clientID: env.GOOGLE_CLIENT_ID,
     clientSecret: env.GOOGLE_CLIENT_SECRET,
     callbackURL: "/api/v1/auth/google/callback"
-  },
-  async (accessToken, refreshToken, profile, done) => {
+},
+    async (accessToken, refreshToken, profile, done) => {
 
-    try{
+        try {
 
-        let user = await User.findOne({ provider: "google", providerId: profile.id });
+            let user = await User.findOne({ provider: "google", providerId: profile.id });
 
-        if(!user){
-            user = await User.create({
-                name: profile.displayName,
-                email: profile.emails?.[0]?.value,
-                avatar: profile.photos?.[0]?.value,
-                password: "",
-                provider: "google",
-                providerId: profile.id,
-                isEmailVerified: true,
-            })
+            if (!user) {
+                user = await User.create({
+                    name: profile.displayName,
+                    email: profile.emails?.[0]?.value,
+                    avatar: profile.photos?.[0]?.value,
+                    password: "",
+                    provider: "google",
+                    providerId: profile.id,
+                    isEmailVerified: true,
+                })
+            }
+
+            return done(null, user);
+
+        } catch (err) {
+            return done(err as Error);
         }
-
-        return done(null, user);
-
-    }catch(err){
-        return done(err as Error);
     }
-  }
 ));
 
 passport.use(new GitHubStrategy({
@@ -47,31 +47,31 @@ passport.use(new GitHubStrategy({
     clientSecret: env.GITHUB_CLIENT_SECRET,
     callbackURL: "/api/v1/auth/github/callback",
     scope: ["user:email"]
-  },
-  async (accessToken: string, refreshToken: string, profile: any, done: Function) => {
+},
+    async (accessToken: string, refreshToken: string, profile: any, done: Function) => {
 
-    try{
-        let user = await User.findOne({ provider: "github", providerId: profile.id });
+        try {
+            let user = await User.findOne({ provider: "github", providerId: profile.id });
 
-        if(!user){
-            user = await User.create({
-                name: profile.displayName,
-                email: profile.emails?.[0]?.value,
-                avatar: profile.photos?.[0]?.value,
-                password: "",
-                provider: "github",
-                providerId: profile.id,
-                isEmailVerified: true,
-            })
+            if (!user) {
+                user = await User.create({
+                    name: profile.displayName,
+                    email: profile.emails?.[0]?.value,
+                    avatar: profile.photos?.[0]?.value,
+                    password: "",
+                    provider: "github",
+                    providerId: profile.id,
+                    isEmailVerified: true,
+                })
+            }
+
+            return done(null, user);
+
+        } catch (err) {
+
+            return done(err as Error);
         }
-
-        return done(null, user);
-
-    }catch(err){
-
-        return done(err as Error);
     }
-  }
 ));
 
 

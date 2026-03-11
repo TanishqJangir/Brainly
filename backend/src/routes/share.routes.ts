@@ -1,7 +1,7 @@
 import express from "express";
 import { requireAuth } from "../middlewares/auth.middleware";
-import { 
-    createShareLinkController, 
+import {
+    createShareLinkController,
     getSharedLinkController
 } from "../controllers/share.controller";
 

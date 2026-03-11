@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 
 interface ModalProps {
     setModalOpen: (open: boolean) => void;
-    onSuccess : () => void;
+    onSuccess: () => void;
 }
 
 const fieldClass = "w-full";

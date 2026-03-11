@@ -119,13 +119,13 @@ const SignupForm = () => {
                             placeholder="name@example.com"
                             required
                             value={email}
-                            onChange={e => { 
+                            onChange={e => {
                                 setEmail(e.target.value)
-                                if(otpSent){
+                                if (otpSent) {
                                     setOtpSent(false);
                                     setOtp("");
                                 }
-                                if(isOtpVerified){
+                                if (isOtpVerified) {
                                     setIsOtpVerified(false);
                                 }
                             }

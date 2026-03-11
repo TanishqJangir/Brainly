@@ -13,7 +13,7 @@ const CardModal = ({ contentId, title, description, url, type, customType, tags,
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     return (
         <>
-            {!isViewer && <DeleteModal onOpen={deleteModalOpen} onClose={setDeleteModalOpen} contentId={contentId} setModalOpen={setModalOpen} onSuccess={onSuccess}/>}
+            {!isViewer && <DeleteModal onOpen={deleteModalOpen} onClose={setDeleteModalOpen} contentId={contentId} setModalOpen={setModalOpen} onSuccess={onSuccess} />}
             <div className="fixed inset-0 z-40 flex justify-center items-center bg-black/60 backdrop-blur-sm">
                 <div className="relative flex flex-col gap-3 w-full max-w-[70vw] max-h-[90vh] overflow-y-auto bg-white dark:bg-[#111111] dark:text-white rounded-4xl shadow-2xl border border-gray-200 dark:border-white/10 px-8 py-8 mx-4 [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
                     <CrossIcon
@@ -62,17 +62,17 @@ const CardModal = ({ contentId, title, description, url, type, customType, tags,
                                         Open
                                     </Button>
                                     {!isViewer && (
-                                    <Button
-                                        variant="delete"
-                                        onClick={e => {
-                                            e.stopPropagation();
-                                            setDeleteModalOpen(true);
-                                        }}
-                                        className="rounded-xl!"
-                                    >
-                                        <DeleteIcon className="size-4" />
-                                        Delete
-                                    </Button>
+                                        <Button
+                                            variant="delete"
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                setDeleteModalOpen(true);
+                                            }}
+                                            className="rounded-xl!"
+                                        >
+                                            <DeleteIcon className="size-4" />
+                                            Delete
+                                        </Button>
                                     )}
                                 </div>
                             </div>

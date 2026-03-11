@@ -30,8 +30,8 @@ export const EmbedLinks = ({ type, customType, url }: {
                 src={`https://www.youtube.com/embed/${videoId}`}
                 title="YouTube video player" frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin" allowFullScreen 
-                />
+                referrerPolicy="strict-origin-when-cross-origin" allowFullScreen
+            />
         )
     }
 
@@ -114,7 +114,7 @@ export const EmbedLinks = ({ type, customType, url }: {
     if (type === "notion") {
         return (
             <div className="w-full aspect-video rounded-xl flex flex-col items-center justify-center bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400">
-                <NotionIcon className="h-8"/>
+                <NotionIcon className="h-8" />
                 No Preview Available
             </div>
         );
@@ -123,7 +123,7 @@ export const EmbedLinks = ({ type, customType, url }: {
     if (type === "github") {
         return (
             <div className="w-full aspect-video rounded-xl flex flex-col items-center justify-center bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400">
-                <GithubIcon className="size-8"/>
+                <GithubIcon className="size-8" />
                 No Preview Available
             </div>
         );
@@ -131,7 +131,7 @@ export const EmbedLinks = ({ type, customType, url }: {
 
     // Fallback for "link" and any other type
     let hostname = url;
-    try { hostname = new URL(url).hostname.replace('www.', ''); } catch {}
+    try { hostname = new URL(url).hostname.replace('www.', ''); } catch { }
 
     return (
         <div className="w-full aspect-video rounded-xl flex flex-col items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 px-4">
@@ -173,15 +173,15 @@ export const InstagramEmbed = ({ url }: { url: string }) => {
     }
 
     return (
-   <div className="w-full aspect-video rounded-xl overflow-hidden bg-gray-100 dark:bg-white/10">
-    <div className="w-full h-full overflow-y-auto [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
-        <blockquote
-            className="instagram-media w-full"
-            data-instgrm-permalink={url}
-            data-instgrm-version="14"
-        />
-    </div>
-</div>
-);
+        <div className="w-full aspect-video rounded-xl overflow-hidden bg-gray-100 dark:bg-white/10">
+            <div className="w-full h-full overflow-y-auto [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
+                <blockquote
+                    className="instagram-media w-full"
+                    data-instgrm-permalink={url}
+                    data-instgrm-version="14"
+                />
+            </div>
+        </div>
+    );
 };
 

@@ -92,7 +92,8 @@ export const EntityContainer = ({ onCardClick, refreshKey, onSuccess }: {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-6 py-4">
             {filteredContents.map((content: any) => (
                 <Card
-                    key={content.url}
+                    _id={content._id}
+                    key={content._id}
                     contentId={content._id}
                     type={content.type}
                     title={content.title}

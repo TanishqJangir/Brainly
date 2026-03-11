@@ -9,7 +9,7 @@ const DeleteModal = ({ onOpen, onClose, contentId, setModalOpen, onDelete, onSuc
   onClose: (open: boolean) => void;
   contentId: string;
   setModalOpen?: (open: boolean) => void;
-  onDelete?: (id:string) => void;
+  onDelete?: (id: string) => void;
   onSuccess?: () => void;
 }) => {
 
@@ -28,7 +28,7 @@ const DeleteModal = ({ onOpen, onClose, contentId, setModalOpen, onDelete, onSuc
 
       const data = response.data;
 
-      toast.success(data.message || "Deleted the content successfully.",{
+      toast.success(data.message || "Deleted the content successfully.", {
         duration: 3000,
         icon: null,
       });
@@ -39,18 +39,18 @@ const DeleteModal = ({ onOpen, onClose, contentId, setModalOpen, onDelete, onSuc
 
       onClose(false);
       setLoading(false);
-      if(setModalOpen) {
+      if (setModalOpen) {
         setModalOpen(false);
       }
 
-      if(onSuccess) {
+      if (onSuccess) {
         onSuccess();
       }
 
     } catch (error: any) {
 
       console.error("Error deleting content:", error);
-      
+
       error.response?.data?.message
         ? toast.error(error.response.data.message)
         : toast.error("Failed to delete content. Please try again.");

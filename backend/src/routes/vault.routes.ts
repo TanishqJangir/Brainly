@@ -1,12 +1,12 @@
 import express from "express";
-import { 
-    createContentController, 
-    updateContentController, 
-    deleteContentController, 
-    getContentsController 
+import {
+    createContentController,
+    updateContentController,
+    deleteContentController,
+    getContentsController
 } from "../controllers/vault.controller";
 import { requireAuth } from "../middlewares/auth.middleware";
-import {createVaultSchema} from "../validators/vault.validator"
+import { createVaultSchema } from "../validators/vault.validator"
 import { validate } from "../middlewares/validate.middleware";
 const router = express.Router();
 

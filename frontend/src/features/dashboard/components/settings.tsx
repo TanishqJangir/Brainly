@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import CrossIcon from "../../../assets/svgIcons/CrossIcon";
 import MoonIcon from "../../../assets/svgIcons/MoonIcon";
@@ -18,7 +18,7 @@ const Settings = ({ onOpen, onClose, userData }: {
     const [isDark, setIsDark] = useState(() => isDarkMode());
     const isOAuthUser = (userData?.passwordLength ?? 0) === 0;
     const [isEditingName, setIsEditingName] = useState(false);
-    
+
     // Password flow states
     const [passwordStage, setPasswordStage] = useState<"idle" | "otp" | "new_password">("idle");
     const [otpInput, setOtpInput] = useState("");
@@ -31,7 +31,6 @@ const Settings = ({ onOpen, onClose, userData }: {
     const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
     const [name, setName] = useState(userData?.user?.name);
-    const [password, setPassword] = useState(userData?.user?.password);
     const [editName, setEditName] = useState(name);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const navigate = useNavigate();
@@ -102,9 +101,9 @@ const Settings = ({ onOpen, onClose, userData }: {
         try {
             setIsSavingPassword(true);
             const token = localStorage.getItem("token");
-            await axios.put("http://localhost:8000/api/v1/auth/password", { 
-                otp: otpInput, 
-                newPassword: editPassword 
+            await axios.put("http://localhost:8000/api/v1/auth/password", {
+                otp: otpInput,
+                newPassword: editPassword
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -126,17 +125,17 @@ const Settings = ({ onOpen, onClose, userData }: {
     };
 
     const handleCopyLink = async () => {
-        try{
+        try {
             const token = localStorage.getItem("token");
             const response = await axios.post("http://localhost:8000/api/v1/share/create", {}, {
-                headers : {
-                    Authorization : `Bearer ${token}`
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
             });
             const link = response.data.shareLink;
             navigator.clipboard.writeText(`http://localhost:5173/share/${link}`);
             toast.success("Link copied to clipboard!");
-        }catch(error : any){
+        } catch (error: any) {
             toast.error(error.response?.data?.message || "Failed to copy link");
         }
     };
@@ -179,7 +178,7 @@ const Settings = ({ onOpen, onClose, userData }: {
 
                 <div className="px-6 py-5 flex flex-col gap-5 max-h-[75vh] overflow-y-auto [&::-webkit-scrollbar]:w-0 [scrollbar-width:none]">
 
-                    {/* Profile Section */} 
+                    {/* Profile Section */}
                     <div className="flex items-center gap-4">
                         <div className="relative shrink-0">
                             <div className="w-12 h-12 rounded-full bg-brand flex items-center justify-center text-white text-xs font-bold shrink-0">
@@ -240,55 +239,55 @@ const Settings = ({ onOpen, onClose, userData }: {
                         {/* Password */}
                         {/* Password */}
                         {!isOAuthUser && (
-                        <div className="flex flex-col gap-1">
-                            <label className="text-xs text-gray-400 dark:text-gray-500">Password</label>
-                            
-                            {passwordStage === "otp" && (
-                                <div className="flex gap-2">
-                                    <input
-                                        autoFocus
-                                        type="text"
-                                        maxLength={6}
-                                        value={otpInput}
-                                        onChange={(e) => setOtpInput(e.target.value)}
-                                        placeholder="Enter 6-digit OTP"
-                                        className="flex-1 px-3 py-2 rounded-lg text-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand/50"
-                                    />
-                                    <button onClick={handleVerifyPasswordOtp} disabled={isVerifyingOtp} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[50px]">
-                                        {isVerifyingOtp ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin brightness-0 invert" /> : "Verify"}
-                                    </button>
-                                    <button onClick={handleCancelPasswordEdit} disabled={isVerifyingOtp} className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-white cursor-pointer disabled:opacity-50">Cancel</button>
-                                </div>
-                            )}
+                            <div className="flex flex-col gap-1">
+                                <label className="text-xs text-gray-400 dark:text-gray-500">Password</label>
 
-                            {passwordStage === "new_password" && (
-                                <div className="flex gap-2">
-                                    <input
-                                        autoFocus
-                                        type="password"
-                                        value={editPassword}
-                                        onChange={(e) => setEditPassword(e.target.value)}
-                                        placeholder="Enter new password"
-                                        className="flex-1 px-3 py-2 rounded-lg text-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand/50"
-                                    />
-                                    <button onClick={handleSavePassword} disabled={isSavingPassword} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[50px]">
-                                        {isSavingPassword ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin brightness-0 invert" /> : "Save"}
-                                    </button>
-                                    <button onClick={handleCancelPasswordEdit} disabled={isSavingPassword} className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-white cursor-pointer disabled:opacity-50">Cancel</button>
-                                </div>
-                            )}
+                                {passwordStage === "otp" && (
+                                    <div className="flex gap-2">
+                                        <input
+                                            autoFocus
+                                            type="text"
+                                            maxLength={6}
+                                            value={otpInput}
+                                            onChange={(e) => setOtpInput(e.target.value)}
+                                            placeholder="Enter 6-digit OTP"
+                                            className="flex-1 px-3 py-2 rounded-lg text-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand/50"
+                                        />
+                                        <button onClick={handleVerifyPasswordOtp} disabled={isVerifyingOtp} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[50px]">
+                                            {isVerifyingOtp ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin brightness-0 invert" /> : "Verify"}
+                                        </button>
+                                        <button onClick={handleCancelPasswordEdit} disabled={isVerifyingOtp} className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-white cursor-pointer disabled:opacity-50">Cancel</button>
+                                    </div>
+                                )}
 
-                            {passwordStage === "idle" && (
-                                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/5">
-                                    <span className="text-sm font-medium text-gray-800 dark:text-gray-200 tracking-widest">
-                                        {"•".repeat(userData?.passwordLength ?? 0)}
-                                    </span>
-                                    <button onClick={handleRequestPasswordOtp} disabled={isRequestingOtp} className="text-gray-400 hover:text-brand transition cursor-pointer disabled:opacity-50 flex items-center justify-center min-w-[20px]">
-                                        {isRequestingOtp ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin opacity-50 dark:invert" /> : <EditIcon className="size-4" />}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                                {passwordStage === "new_password" && (
+                                    <div className="flex gap-2">
+                                        <input
+                                            autoFocus
+                                            type="password"
+                                            value={editPassword}
+                                            onChange={(e) => setEditPassword(e.target.value)}
+                                            placeholder="Enter new password"
+                                            className="flex-1 px-3 py-2 rounded-lg text-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand/50"
+                                        />
+                                        <button onClick={handleSavePassword} disabled={isSavingPassword} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[50px]">
+                                            {isSavingPassword ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin brightness-0 invert" /> : "Save"}
+                                        </button>
+                                        <button onClick={handleCancelPasswordEdit} disabled={isSavingPassword} className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-white cursor-pointer disabled:opacity-50">Cancel</button>
+                                    </div>
+                                )}
+
+                                {passwordStage === "idle" && (
+                                    <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/5">
+                                        <span className="text-sm font-medium text-gray-800 dark:text-gray-200 tracking-widest">
+                                            {"•".repeat(userData?.passwordLength ?? 0)}
+                                        </span>
+                                        <button onClick={handleRequestPasswordOtp} disabled={isRequestingOtp} className="text-gray-400 hover:text-brand transition cursor-pointer disabled:opacity-50 flex items-center justify-center min-w-[20px]">
+                                            {isRequestingOtp ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin opacity-50 dark:invert" /> : <EditIcon className="size-4" />}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </div>
 

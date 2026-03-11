@@ -41,7 +41,7 @@ export const Card = ({ _id, contentId, title, description, type, customType, url
     const handleCopy = () => {
         navigator.clipboard.writeText(url);
         setCopied(true);
-        toast.success("URL copied to clipboard!",{
+        toast.success("URL copied to clipboard!", {
             icon: null,
         });
 
@@ -52,7 +52,7 @@ export const Card = ({ _id, contentId, title, description, type, customType, url
 
     return (
         <>
-            <DeleteModal onOpen={deleteModalOpen} onClose={setDeleteModalOpen} contentId={contentId} onSuccess={onSuccess}/>
+            <DeleteModal onOpen={deleteModalOpen} onClose={setDeleteModalOpen} contentId={contentId} onSuccess={onSuccess} />
             <div
                 className="flex flex-col gap-3 p-2 rounded-2xl bg-white dark:bg-[#151515] border border-gray-200 dark:border-white/10 shadow transition-transform duration-300 cursor-pointer hover:scale-[1.05] hover:shadow-2xl"
                 onClick={onClick}
@@ -92,40 +92,40 @@ export const Card = ({ _id, contentId, title, description, type, customType, url
                             {createdAt ? new Date(createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : ""}
                         </p>
 
-                       
+
                         <div className="flex gap-2">
-                            <div 
-                            title={copied ? "Copied!" : "Copy URL"}
+                            <div
+                                title={copied ? "Copied!" : "Copy URL"}
                             >
 
                                 {copied ? (
-                                    <CheckIcon 
-                                    onClick={e => {
-                                        e.stopPropagation();
-                                    }}
-                                    className="size-5 cursor-pointer text-gray-400 dark:hover:text-white hover:text-gray-600" />
+                                    <CheckIcon
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                        }}
+                                        className="size-5 cursor-pointer text-gray-400 dark:hover:text-white hover:text-gray-600" />
                                 ) : (
-                                    <CopyIcon 
-                                    onClick={e => {
-                                        e.stopPropagation();
-                                        handleCopy();
-                                    }}
-                                    className="size-5 cursor-pointer text-gray-400 dark:hover:text-white hover:text-gray-600" />
+                                    <CopyIcon
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            handleCopy();
+                                        }}
+                                        className="size-5 cursor-pointer text-gray-400 dark:hover:text-white hover:text-gray-600" />
                                 )}
 
                             </div>
                             {!isViewer && (
-                            <DeleteIcon
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    setDeleteModalOpen(true);
-                                }} //TODO: Add delete functionality
-                                className="size-5 cursor-pointer text-gray-400 hover:text-red-500 "
-                            />
+                                <DeleteIcon
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        setDeleteModalOpen(true);
+                                    }} //TODO: Add delete functionality
+                                    className="size-5 cursor-pointer text-gray-400 hover:text-red-500 "
+                                />
                             )}
 
                         </div>
-                        
+
                     </div>
                 </div>
             </div>

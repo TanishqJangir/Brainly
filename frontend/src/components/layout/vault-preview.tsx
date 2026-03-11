@@ -41,7 +41,7 @@ const VaultPreview = () => {
                 <Button
                     variant="ghost"
                     className="group/btn flex gap-2 rounded-full! font-semibold p-0! text-sm md:text-lg transition-all duration-300 ease-in-out hover:bg-transparent dark:hover:bg-transparent!"
-                    onClick={() => {navigate("/login")}} //TODO: Add functionality to navigate to the vault page
+                    onClick={() => { navigate("/login") }} //TODO: Add functionality to navigate to the vault page
                 >
                     View All
                     <RightArrow className="md:size-7 size-4 mt-1 transition-transform duration-300 ease-in-out group-hover/btn:translate-x-1.5" />

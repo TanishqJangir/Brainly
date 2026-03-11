@@ -11,5 +11,5 @@ export const createVaultSchema = z.object({
     tags: z.array(z.string()).max(5, "Maximum of 5 tags allowed").optional(),
 }).refine(
     (data) => data.type !== "other" || (data.customType && data.customType.trim().length > 0),
-    {message: "Please specify the type", path:["customType"]}
+    { message: "Please specify the type", path: ["customType"] }
 )

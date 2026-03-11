@@ -31,7 +31,7 @@ export const createShareLinkController = async (req: Request, res: Response): Pr
 
 export const getSharedLinkController = async (req: Request, res: Response): Promise<any> => {
     const { shareLink } = req.params;
-    try{
+    try {
         const user = await User.findOne({
             shareLink: shareLink,
             shareLinkExpiry: { $gt: new Date() }

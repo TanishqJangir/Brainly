@@ -77,39 +77,39 @@ const Sidebar = ({ collapsed = false }: SidebarProps) => {
 
     useEffect(() => {
         const getUser = async () => {
-        const user = await fetchUser();
-        setUserData(user);
+            const user = await fetchUser();
+            setUserData(user);
         }
         getUser();
-    },[]);
+    }, []);
 
     return (
         <>
             {settingsModal && (
                 <Settings
-                    onOpen={settingsModal} 
+                    onOpen={settingsModal}
                     onClose={(val) => {
                         setSettingsModal(val);
                         setActive(previousPath);
                         navigate(previousPath);
-                    }} 
+                    }}
                     userData={userData}
-                    />
-        )}
+                />
+            )}
             <aside className={`h-screen flex flex-col bg-white dark:bg-[#111111] border-r border-gray-200 dark:border-white/10 select-none shrink-0 transition-all duration-300 overflow-hidden ${collapsed ? "w-16" : "w-60"}`}>
 
-                <Link to="/dashboard" onClick={() => {setActive("/dashboard")}}>
-                <div className={`flex items-center gap-3 px-3 py-5 border-b border-gray-100 dark:border-white/10 ${collapsed ? "justify-center" : "px-5"}`}>
-                    <div className="flex items-center justify-center w-9 h-9 bg-brand rounded-xl shrink-0">
-                        <img src={logo} alt="Brainly" className="size-5" />
-                    </div>
-                    {!collapsed && (
-                        <div className="flex flex-col leading-tight">
-                            <span className="text-sm font-bold text-gray-900 dark:text-white">Brainly</span>
-                            <span className="text-xs text-gray-400 dark:text-gray-500">Personal Workspace</span>
+                <Link to="/dashboard" onClick={() => { setActive("/dashboard") }}>
+                    <div className={`flex items-center gap-3 px-3 py-5 border-b border-gray-100 dark:border-white/10 ${collapsed ? "justify-center" : "px-5"}`}>
+                        <div className="flex items-center justify-center w-9 h-9 bg-brand rounded-xl shrink-0">
+                            <img src={logo} alt="Brainly" className="size-5" />
                         </div>
-                    )}
-                </div>
+                        {!collapsed && (
+                            <div className="flex flex-col leading-tight">
+                                <span className="text-sm font-bold text-gray-900 dark:text-white">Brainly</span>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">Personal Workspace</span>
+                            </div>
+                        )}
+                    </div>
                 </Link>
 
                 {/* Nav */}

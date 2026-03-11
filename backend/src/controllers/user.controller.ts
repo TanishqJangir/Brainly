@@ -224,40 +224,40 @@ export const deleteAccountController = async (req: Request, res: Response): Prom
 };
 
 
-export const generatePasswordOtpController = async (req: Request, res: Response) : Promise<any> => {
-        try{
-            const userId = (req.user as TokenPayload).userId;
-            const user = await User.findById(userId);
+export const generatePasswordOtpController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const userId = (req.user as TokenPayload).userId;
+        const user = await User.findById(userId);
 
-            if(!user){
-                return res.status(404).json({
-                    message : "User not found."
-                })
-            }
-            
-            const passwordOtp =     Math.floor(100000 + Math.random() * 900000).toString();
-            const hashedOtp = crypto.createHash("sha256").update(passwordOtp).digest("hex");
-            const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-
-            await User.findByIdAndUpdate(userId, {
-                $set : {
-                    otp : hashedOtp, 
-                    otpExpiry
-                }
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found."
             })
-
-            await sendOtpEmail(user.email, passwordOtp);
-
-            return res.status(200).json({
-                message : "OTP sent successfully."
-            });
-      
-        } catch (error) {
-            console.error('Error generating password OTP:', error);
-            return res.status(500).json({
-                message : "Internal server error"
-            });
         }
+
+        const passwordOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        const hashedOtp = crypto.createHash("sha256").update(passwordOtp).digest("hex");
+        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+        await User.findByIdAndUpdate(userId, {
+            $set: {
+                otp: hashedOtp,
+                otpExpiry
+            }
+        })
+
+        await sendOtpEmail(user.email, passwordOtp);
+
+        return res.status(200).json({
+            message: "OTP sent successfully."
+        });
+
+    } catch (error) {
+        console.error('Error generating password OTP:', error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
 }
 
 export const verifyPasswordOtpController = async (req: Request, res: Response): Promise<any> => {
@@ -327,7 +327,7 @@ export const updatePasswordController = async (req: Request, res: Response): Pro
 
         await User.findByIdAndUpdate(userId, {
             $set: { password: hashedPassword },
-            $unset: { otp: "", otpExpiry: "" } 
+            $unset: { otp: "", otpExpiry: "" }
         });
 
         return res.status(200).json({ message: "Password updated successfully" });
