@@ -19,12 +19,10 @@ export const SignupController = async (req: Request, res: Response): Promise<any
             email: email
         });
 
-        // If a fully verified account already exists, reject
         if (existingUser && existingUser.isEmailVerified && existingUser.name !== '__pending__') {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // If a temp verified record exists (email was verified via OTP), update it with real details
         if (existingUser && existingUser.isEmailVerified) {
             const hashedPassword = await bcrypt.hash(password, 10);
             await User.findByIdAndUpdate(existingUser._id, { name, password: hashedPassword });
@@ -37,12 +35,10 @@ export const SignupController = async (req: Request, res: Response): Promise<any
             });
         }
 
-        // If no record exists (user skipped OTP), reject — OTP verification is required
         if (!existingUser) {
             return res.status(400).json({ message: 'Please verify your email first' });
         }
 
-        // Unverified record exists — shouldn't reach here, but safeguard
         return res.status(400).json({ message: 'Please verify your email before completing signup' });
 
     } catch (error) {
@@ -71,8 +67,6 @@ export const GenerateOtpController = async (req: Request, res: Response): Promis
         const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
         const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
 
-        // Match on email only — avoids duplicate key error when a temp doc already exists
-        // with any isEmailVerified state. $setOnInsert only applies on new doc creation.
         await User.findOneAndUpdate(
             { email },
             {
@@ -133,8 +127,6 @@ export const VerifyOtpController = async (req: Request, res: Response): Promise<
             });
         }
 
-        // Use findByIdAndUpdate to avoid triggering schema validators on the
-        // incomplete temp doc (which may be missing name/password until /signup).
         await User.findByIdAndUpdate(user._id, {
             $set: { isEmailVerified: true },
             $unset: { otp: "", otpExpiry: "" }
@@ -211,9 +203,163 @@ export const meController = async (req: Request, res: Response): Promise<any> =>
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        return res.status(200).json({ user });
+        const passwordData = await User.findById((req.user as TokenPayload).userId).select("password").lean();
+        const passwordLength = passwordData?.password ? 8 : 0;
+        return res.status(200).json({ user, passwordLength });
     } catch (error) {
         console.error('Error fetching user details:', error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+export const deleteAccountController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const userId = (req.user as TokenPayload).userId;
+        await User.findByIdAndDelete(userId);
+        return res.status(200).json({ message: "Account deleted successfully" });
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+export const generatePasswordOtpController = async (req: Request, res: Response) : Promise<any> => {
+        try{
+            const userId = (req.user as TokenPayload).userId;
+            const user = await User.findById(userId);
+
+            if(!user){
+                return res.status(404).json({
+                    message : "User not found."
+                })
+            }
+            
+            const passwordOtp =     Math.floor(100000 + Math.random() * 900000).toString();
+            const hashedOtp = crypto.createHash("sha256").update(passwordOtp).digest("hex");
+            const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+            await User.findByIdAndUpdate(userId, {
+                $set : {
+                    otp : hashedOtp, 
+                    otpExpiry
+                }
+            })
+
+            await sendOtpEmail(user.email, passwordOtp);
+
+            return res.status(200).json({
+                message : "OTP sent successfully."
+            });
+      
+        } catch (error) {
+            console.error('Error generating password OTP:', error);
+            return res.status(500).json({
+                message : "Internal server error"
+            });
+        }
+}
+
+export const verifyPasswordOtpController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const userId = (req.user as TokenPayload).userId;
+        const { otp } = req.body;
+
+        if (!otp) {
+            return res.status(400).json({ message: "OTP is required" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.otp || !user.otpExpiry) {
+            return res.status(400).json({ message: "No OTP requested or OTP already used" });
+        }
+
+        const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+        if (user.otp !== hashedOtp) {
+            return res.status(400).json({ message: "Invalid OTP" });
+        }
+
+        if (user.otpExpiry.getTime() < Date.now()) {
+            return res.status(400).json({ message: "OTP expired" });
+        }
+
+        return res.status(200).json({ message: "OTP verified successfully" });
+
+    } catch (error) {
+        console.error('Error verifying password OTP:', error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const updatePasswordController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const userId = (req.user as TokenPayload).userId;
+        const { otp, newPassword } = req.body;
+
+        if (!otp || !newPassword) {
+            return res.status(400).json({ message: "OTP and new password are required" });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters long" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.otp || !user.otpExpiry) {
+            return res.status(400).json({ message: "No valid OTP found. Please request a new one." });
+        }
+
+        const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+        if (user.otp !== hashedOtp || user.otpExpiry.getTime() < Date.now()) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await User.findByIdAndUpdate(userId, {
+            $set: { password: hashedPassword },
+            $unset: { otp: "", otpExpiry: "" } 
+        });
+
+        return res.status(200).json({ message: "Password updated successfully" });
+
+    } catch (error) {
+        console.error('Error updating password:', error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const updateNameController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const userId = (req.user as TokenPayload).userId;
+        const { name } = req.body;
+
+        if (!name || name.trim().length === 0) {
+            return res.status(400).json({ message: "Name is required" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        await User.findByIdAndUpdate(userId, {
+            $set: { name: name.trim() }
+        });
+
+        return res.status(200).json({ message: "Name updated successfully", name: name.trim() });
+
+    } catch (error) {
+        console.error('Error updating name:', error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}

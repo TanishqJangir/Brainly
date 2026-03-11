@@ -1,19 +1,24 @@
 import axios from "axios";
 import { Button } from "../../../components/ui/Button";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 
-const DeleteModal = ({ onOpen, onClose, contentId, setModalOpen, onDelete }: {
+const DeleteModal = ({ onOpen, onClose, contentId, setModalOpen, onDelete, onSuccess }: {
   onOpen?: boolean;
   onClose: (open: boolean) => void;
   contentId: string;
   setModalOpen?: (open: boolean) => void;
   onDelete?: (id:string) => void;
+  onSuccess?: () => void;
 }) => {
+
+  const [loading, setLoading] = useState(false);
 
   const deleteContent = async () => {
 
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.delete(`http://localhost:8000/api/v1/vault/${contentId}`, {
         headers: {
@@ -33,9 +38,13 @@ const DeleteModal = ({ onOpen, onClose, contentId, setModalOpen, onDelete }: {
       }
 
       onClose(false);
-
+      setLoading(false);
       if(setModalOpen) {
         setModalOpen(false);
+      }
+
+      if(onSuccess) {
+        onSuccess();
       }
 
     } catch (error: any) {
@@ -59,7 +68,9 @@ const DeleteModal = ({ onOpen, onClose, contentId, setModalOpen, onDelete }: {
         </p>
         <div className="flex gap-4 w-full justify-end">
           <Button variant="open" onClick={() => onClose(false)} className="rounded-xl">Cancel</Button>
-          <Button variant="delete" onClick={deleteContent} className="rounded-xl">Confirm</Button>
+          <Button variant="delete" onClick={deleteContent} className="rounded-xl">
+            {loading ? "Deleting..." : "Confirm"}
+          </Button>
         </div>
       </div>
     </div>

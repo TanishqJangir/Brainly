@@ -6,8 +6,6 @@ import { Card, type CardProps } from "./Card"
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-const BACKEND_URL = import.meta.env.BACKEND_URL || "http://localhost:8000";
-
 // Maps sidebar route segments → card type values
 const routeToType: Record<string, CardProps["type"]> = {
     youtube: "youtube",
@@ -42,7 +40,11 @@ export const EntityHeader = ({ setModalOpen }: { setModalOpen: (open: boolean) =
 };
 
 
-export const EntityContainer = ({ onCardClick }: { onCardClick: (card: CardProps) => void }) => {
+export const EntityContainer = ({ onCardClick, refreshKey, onSuccess }: {
+    onCardClick: (card: CardProps) => void;
+    refreshKey: number;
+    onSuccess: () => void;
+}) => {
 
     const [contents, setContents] = useState<CardProps[]>([]);
     const [loading, setLoading] = useState(false);
@@ -60,7 +62,7 @@ export const EntityContainer = ({ onCardClick }: { onCardClick: (card: CardProps
         try {
             setLoading(true);
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${BACKEND_URL}/api/v1/vault`, {
+            const response = await axios.get(`http://localhost:8000/api/v1/vault`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -75,13 +77,13 @@ export const EntityContainer = ({ onCardClick }: { onCardClick: (card: CardProps
 
     useEffect(() => {
         fetchContents();
-    }, []);
+    }, [refreshKey]);
 
 
-    if(loading) {
+    if (loading) {
         return <EntityLoadingState />
     }
-    if(filteredContents.length === 0) {
+    if (filteredContents.length === 0) {
         return <EntityEmptyState type={activeType} />
     }
 
@@ -99,9 +101,10 @@ export const EntityContainer = ({ onCardClick }: { onCardClick: (card: CardProps
                     tags={content.tags}
                     customType={content.customType}
                     createdAt={content.createdAt}
+                    onSuccess={onSuccess}
                     onClick={() => {
                         console.log("Card clicked:", content);
-                        onCardClick({...content, contentId : content._id})
+                        onCardClick({ ...content, contentId: content._id })
                     }}
                 />
             ))}

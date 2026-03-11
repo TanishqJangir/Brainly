@@ -7,6 +7,7 @@ import CheckIcon from "../../../assets/svgIcons/CheckIcon";
 import toast from "react-hot-toast";
 
 export interface CardProps {
+    _id: string;
     contentId: string;
     title: string;
     description?: string;
@@ -15,7 +16,9 @@ export interface CardProps {
     url: string;
     tags?: string[];
     createdAt?: Date;
+    isViewer?: boolean;
     onClick?: () => void;
+    onSuccess?: () => void;
 }
 
 export const typeStyles: Record<CardProps["type"], { color: string }> = {
@@ -29,7 +32,7 @@ export const typeStyles: Record<CardProps["type"], { color: string }> = {
     other: { color: "bg-gray-100/80 text-gray-600 dark:bg-white/10 dark:text-gray-300" },
 };
 
-export const Card = ({ contentId, title, description, type, customType, url, tags = [], createdAt, onClick }: CardProps) => {
+export const Card = ({ _id, contentId, title, description, type, customType, url, tags = [], createdAt, isViewer = false, onClick, onSuccess }: CardProps) => {
     const { color } = typeStyles[type];
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -49,7 +52,7 @@ export const Card = ({ contentId, title, description, type, customType, url, tag
 
     return (
         <>
-            <DeleteModal onOpen={deleteModalOpen} onClose={setDeleteModalOpen} contentId={contentId} />
+            <DeleteModal onOpen={deleteModalOpen} onClose={setDeleteModalOpen} contentId={contentId} onSuccess={onSuccess}/>
             <div
                 className="flex flex-col gap-3 p-2 rounded-2xl bg-white dark:bg-[#151515] border border-gray-200 dark:border-white/10 shadow transition-transform duration-300 cursor-pointer hover:scale-[1.05] hover:shadow-2xl"
                 onClick={onClick}
@@ -89,6 +92,7 @@ export const Card = ({ contentId, title, description, type, customType, url, tag
                             {createdAt ? new Date(createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : ""}
                         </p>
 
+                       
                         <div className="flex gap-2">
                             <div 
                             title={copied ? "Copied!" : "Copy URL"}
@@ -110,7 +114,7 @@ export const Card = ({ contentId, title, description, type, customType, url, tag
                                 )}
 
                             </div>
-
+                            {!isViewer && (
                             <DeleteIcon
                                 onClick={e => {
                                     e.stopPropagation();
@@ -118,8 +122,10 @@ export const Card = ({ contentId, title, description, type, customType, url, tag
                                 }} //TODO: Add delete functionality
                                 className="size-5 cursor-pointer text-gray-400 hover:text-red-500 "
                             />
+                            )}
 
                         </div>
+                        
                     </div>
                 </div>
             </div>

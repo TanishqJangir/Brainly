@@ -9,7 +9,7 @@ import EyeIcon from "../../../assets/svgIcons/EyeIcon";
 import EyeSlashIcon from "../../../assets/svgIcons/EyeSlashIcon";
 import toast from "react-hot-toast";
 
-const BACKEND_URL = import.meta.env.BACKEND_URL;
+const BACKEND_URL = "http://localhost:8000";
 
 const SignupForm = () => {
     const [showPassword, setShowPassword] = useState(false);

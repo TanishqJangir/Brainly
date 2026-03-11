@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Sidebar from "../../common/sidebar";
+import Sidebar from "../components/sidebar";
 import { EntityHeader, EntityContainer } from "../components/entity-Components";
 import SidebarIcon from "../../../assets/svgIcons/SidebarIcon";
 import AddContentModal from "../components/add-Content-Modal";
@@ -12,6 +12,9 @@ const Dashboard = () => {
     const [addContentmodalOpen, setAddContentModalOpen] = useState(false);
     const [cardModalOpen, setCardModalOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState<CardProps | null>(null);
+    const [refreshKey, setRefreshKey] = useState(0);
+    const refresh = () => setRefreshKey(k => k + 1);
+
 
     const handleCardClick = (card: CardProps) => {
         console.log("Selected card for Modal:", card)
@@ -22,8 +25,8 @@ const Dashboard = () => {
 
     return (
         <div className="flex h-screen bg-gray-50 dark:bg-[#080808]">
-            {addContentmodalOpen && <AddContentModal setModalOpen={setAddContentModalOpen} />}
-            {cardModalOpen && selectedCard && <CardModal {...selectedCard} setModalOpen={setCardModalOpen} />}
+            {addContentmodalOpen && <AddContentModal setModalOpen={setAddContentModalOpen} onSuccess={refresh} />}
+            {cardModalOpen && selectedCard && <CardModal {...selectedCard} setModalOpen={setCardModalOpen} onSuccess={refresh} />}
             <div className="relative shrink-0 z-30">
                 <Sidebar collapsed={collapsed} />
                 <button
@@ -36,7 +39,7 @@ const Dashboard = () => {
             </div>
             <main className="flex-1 overflow-y-auto">
                 <EntityHeader setModalOpen={setAddContentModalOpen} />
-                <EntityContainer onCardClick={handleCardClick}/>
+                <EntityContainer onCardClick={handleCardClick} refreshKey={refreshKey} onSuccess={refresh} />
             </main>
         </div>
     )

@@ -12,7 +12,6 @@ export const createShareLinkController = async (req: Request, res: Response): Pr
 
         await User.findByIdAndUpdate(userId, {
             shareLink: shareHash,
-            isShareEnabled: true,
             shareLinkExpiry
         });
 
@@ -28,31 +27,13 @@ export const createShareLinkController = async (req: Request, res: Response): Pr
     }
 };
 
-export const disableShareLinkController = async (req: Request, res: Response): Promise<any> => {
-    const userId = (req.user as TokenPayload).userId;
-    try {
-        await User.findByIdAndUpdate(userId, {
-            shareLink: null,
-            isShareEnabled: false,
-            shareLinkExpiry: null
-        });
-        return res.status(200).json({
-            message: "Share link disabled successfully."
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "An error occurred while disabling the share link.",
-            error: error instanceof Error ? error.message : "Unknown error"
-        });
-    }
-};
+
 
 export const getSharedLinkController = async (req: Request, res: Response): Promise<any> => {
     const { shareLink } = req.params;
     try{
         const user = await User.findOne({
             shareLink: shareLink,
-            isShareEnabled: true,
             shareLinkExpiry: { $gt: new Date() }
         });
         if (!user) {
