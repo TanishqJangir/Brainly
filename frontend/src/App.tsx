@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./features/auth/pages/login";
+import ForgetPassword from "./features/auth/pages/forgotPassword";
 import Signup from "./features/auth/pages/signup";
 import Dashboard from "./features/dashboard/pages/dashboard";
 import OAuthCallback from "./features/auth/pages/oauthCallback";
@@ -31,6 +32,12 @@ function App() {
         <Route path="/login" element={
           <PublicRoute>
             <Login />
+          </PublicRoute>
+        } />
+
+        <Route path="/forgot-password" element={
+          <PublicRoute>
+            <ForgetPassword />
           </PublicRoute>
         } />
 

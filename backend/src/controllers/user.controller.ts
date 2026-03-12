@@ -363,3 +363,122 @@ export const updateNameController = async (req: Request, res: Response): Promise
         return res.status(500).json({ message: "Internal server error" });
     }
 }
+
+// --- UN-AUTHENTICATED FORGOT PASSWORD FLOW ---
+
+export const forgotPasswordGenerateOtpController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            // Return success even if not found to prevent email enumeration,
+            // but for simplicity/UX we can return an error here.
+            return res.status(404).json({ message: "User with this email not found" });
+        }
+
+        if (user.provider && user.provider !== "local") {
+            return res.status(400).json({ message: `Please login with your ${user.provider} account.` });
+        }
+
+        const passwordOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        const hashedOtp = crypto.createHash("sha256").update(passwordOtp).digest("hex");
+        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+        await User.findByIdAndUpdate(user._id, {
+            $set: {
+                otp: hashedOtp,
+                otpExpiry
+            }
+        });
+
+        await sendOtpEmail(user.email, passwordOtp);
+
+        return res.status(200).json({
+            message: "Password reset OTP sent to your email."
+        });
+
+    } catch (error) {
+        console.error('Error generating forgot password OTP:', error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const forgotPasswordVerifyOtpController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            return res.status(400).json({ message: "Email and OTP are required" });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.otp || !user.otpExpiry) {
+            return res.status(400).json({ message: "No OTP requested or OTP already used" });
+        }
+
+        const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+        if (user.otp !== hashedOtp) {
+            return res.status(400).json({ message: "Invalid OTP" });
+        }
+
+        if (user.otpExpiry.getTime() < Date.now()) {
+            return res.status(400).json({ message: "OTP expired" });
+        }
+
+        return res.status(200).json({ message: "OTP verified successfully" });
+
+    } catch (error) {
+        console.error('Error verifying forgot password OTP:', error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const forgotPasswordResetController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({ message: "Email, OTP, and new password are required" });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters long" });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.otp || !user.otpExpiry) {
+            return res.status(400).json({ message: "No valid OTP found. Please request a new one." });
+        }
+
+        const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+        if (user.otp !== hashedOtp || user.otpExpiry.getTime() < Date.now()) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await User.findByIdAndUpdate(user._id, {
+            $set: { password: hashedPassword },
+            $unset: { otp: "", otpExpiry: "" }
+        });
+
+        return res.status(200).json({ message: "Password updated successfully" });
+
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
