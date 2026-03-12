@@ -9,7 +9,10 @@ import {
     generatePasswordOtpController,
     verifyPasswordOtpController,
     updatePasswordController,
-    updateNameController
+    updateNameController,
+    forgotPasswordGenerateOtpController,
+    forgotPasswordVerifyOtpController,
+    forgotPasswordResetController
 } from "../controllers/user.controller";
 import { requireAuth } from "../middlewares/auth.middleware";
 import { validate } from "../middlewares/validate.middleware";
@@ -63,12 +66,15 @@ router.delete("/delete-account", requireAuth, deleteAccountController);
 // Profile Update
 router.put("/name", requireAuth, updateNameController);
 
-// Password Change Flow
+// Password Change Flow (Authenticated)
 router.post("/password-otp/generate", requireAuth, generatePasswordOtpController);
 router.post("/password-otp/verify", requireAuth, verifyPasswordOtpController);
 router.put("/password", requireAuth, updatePasswordController);
 
-
+// Forgot Password Flow (Unauthenticated)
+router.post("/forgot-password/generate", forgotPasswordGenerateOtpController);
+router.post("/forgot-password/verify", forgotPasswordVerifyOtpController);
+router.post("/forgot-password/reset", forgotPasswordResetController);
 
 
 export default router;

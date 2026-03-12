@@ -66,7 +66,7 @@ const LoginForm = () => {
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
                         <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                        <a href="#" className="text-xs text-brand hover:underline">Forgot password?</a>
+                        <Link to="/forgot-password" className="text-xs text-brand hover:underline">Forgot password?</Link>
                     </div>
                     <div className="relative">
                         <Input
