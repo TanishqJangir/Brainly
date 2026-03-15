@@ -482,7 +482,7 @@ import { User } from '../models/User.model';
 // }
 
 
-export const GenerateOtpController = async (req: Request, res: Response): Promise<any> => {
+export const generateOtpController = async (req: Request, res: Response): Promise<any> => {
     const { email } = req.body;
 
     if (!email) {
@@ -527,7 +527,7 @@ export const GenerateOtpController = async (req: Request, res: Response): Promis
 }
 
 
-export const VerifyOtpController = async (req: Request, res: Response): Promise<any> => {
+export const verifyOtpController = async (req: Request, res: Response): Promise<any> => {
     const { email, otp } = req.body;
 
     if (!email || !otp) {
@@ -585,7 +585,7 @@ export const VerifyOtpController = async (req: Request, res: Response): Promise<
 }
 
 
-export const SignupController = async (req: Request, res: Response) : Promise<any> => {
+export const signupController = async (req: Request, res: Response) : Promise<any> => {
     const {name, email, password} = req.body;
 
     if(!name || !email || !password){
@@ -647,7 +647,7 @@ export const SignupController = async (req: Request, res: Response) : Promise<an
 }
 
 
-export const SigninController = async (req: Request, res: Response) : Promise<any> => {
+export const signinController = async (req: Request, res: Response) : Promise<any> => {
     const {email, password} = req.body;
 
     if(!email || !password){
@@ -715,6 +715,238 @@ export const meController = async (req: Request, res: Response) : Promise<any> =
 
     }catch(error){
         console.error("Error while users data: ", error);
+        return res.status(500).json({
+            message : "Internal Server Error."
+        })
+    }
+}
+
+
+export const deleteAccountController = async (req: Request, res: Response) : Promise<any> => {
+    try{
+        const userId = (req.user as TokenPayload).userId;
+        await User.findByIdAndDelete(userId);
+        return res.status(200).json({
+            message : "Account deleted successfully."
+        });
+    }catch(error){
+        console.error("Error while deleting accound: ",error);
+        return res.status(500).json({
+            message : "Internal Server Error.",
+        });
+    };
+};
+
+
+export const updateNameController = async (req: Request, res: Response) : Promise<any> => {
+    const {name} = req.body;
+
+    if(!name || name.trim().length === 0){
+        return res.status(400).json({
+            message : "Name is required.",
+        });
+    };
+
+    try{
+        const userId = (req.user as TokenPayload).userId;
+        const user = await User.findByIdAndUpdate(userId,
+            {
+                $set: {
+                    name : name.trim(),
+                }
+            },
+            {
+                new: true,
+            }
+        );
+
+        if(!user){
+            return res.status(400).json({
+                message : "User does not exist."
+            });
+        };
+
+        return res.status(200).json({
+            message : "Name updated successfully."
+        })
+
+    }catch(error){
+        console.error("Error while updating the name: ", error);
+        return res.status(500).json({
+            message : "Internal Server error."
+        });
+    };
+};
+
+
+export const updatePasswordGenerateOtpController = async (req: Request, res: Response) : Promise<any> => {
+    try{
+        const userId = (req.user as TokenPayload).userId;
+
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({
+                message : "User does not exist."
+            });
+        };
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+        await Otp.findOneAndUpdate({
+            email: user.email
+        },{
+            $set:{
+                email: user.email,
+                otp: hashedOtp,
+                otpExpiry: new Date(Date.now() + 5 * 60 * 1000),
+                isVerified: false,
+            }
+        },{
+            upsert: true,
+            new: true,
+        })
+
+        await sendOtpEmail(user.email, otp);
+
+        return res.status(200).json({
+            message : "Otp send successfully."
+        })
+
+    }catch(error){
+        console.error("Error occured while generating the otp from updating the password: ", error);
+        return res.status(500).json({
+            message : "Internal Server Error."
+        });
+    };
+};
+
+
+export const updatePasswordVerifyOtpController = async (req: Request, res: Response) : Promise<any> => {
+    const {otp} = req.body;
+
+    if(!otp){
+        return res.status(400).json({
+            message : "Otp is missing. Try to generate first."
+        });
+    };
+
+    try{
+
+        const userId = (req.user as TokenPayload).userId;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(400).json({
+                message : "User does not exist"
+            })
+        };
+
+        const email = user.email;
+
+        const otpRecord = await Otp.findOne({ email });
+        
+        if(!otpRecord){
+            return res.status(400).json({
+                message : "Otp not found. Please generate otp first."
+            })
+        }
+        
+        if(!otpRecord.otp){
+            return res.status(400).json({
+                message : "Otp not found or already verified."
+            })
+        }
+
+        if(otpRecord.otpExpiry.getTime() < Date.now()){
+            return res.status(400).json({
+                message : "Otp Expired."
+            })
+        }
+        
+        const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+        if(hashedOtp !== otpRecord.otp){
+            return res.status(400).json({
+                message : "Invalid Otp"
+            })
+        }
+
+        await Otp.updateOne({
+            email
+        },{
+            $set: {
+                isVerified: true,
+            }
+        })
+
+
+        return res.status(200).json({
+            message : "Otp verified successfully."
+        })
+
+    }catch(error){
+        console.error("Error while verifying otp for updating the password: ", error);
+        return res.status(500).json({
+            message : "Internal Server Error."
+        })
+    }
+}
+
+
+export const updatePasswordController = async (req: Request, res: Response) : Promise<any> => {
+    const {newPassword} = req.body;
+
+    if(newPassword.length <= 8){
+        return res.status(400).json({
+            message : "Password should be at least of 8 characters."
+        });
+    };
+
+    try{
+        const userId = (req.user as TokenPayload).userId;
+
+        const user = await User.findById(userId);
+
+        if(!user){
+            return res.status(400).json({
+                message : "User does not exist."
+            })
+        }
+
+        const otpRecord = await Otp.findOne({
+            email: user.email
+        });
+
+        if(!otpRecord){
+            return res.status(400).json({
+                message : "Otp not found. Please generate otp first."
+            })
+        }
+
+        if(!otpRecord.isVerified){
+            return res.status(400).json({
+                message : "Otp is not verified. Please first verify the otp."
+            })
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+        await User.findByIdAndUpdate(user._id, {
+            $set: {
+                password: hashedNewPassword,
+            }
+        },{
+            new: true,
+        });
+
+        await otpRecord.deleteOne();
+
+        return res.status(200).json({
+            message : "Password updated successfully."
+        })
+
+    }catch(error){
+        console.error("Error while updating the password: ", error);
         return res.status(500).json({
             message : "Internal Server Error."
         })
