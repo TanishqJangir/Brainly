@@ -647,7 +647,7 @@ export const SignupController = async (req: Request, res: Response) : Promise<an
 }
 
 
-export const signinController = async (req: Request, res: Response) : Promise<any> => {
+export const SigninController = async (req: Request, res: Response) : Promise<any> => {
     const {email, password} = req.body;
 
     if(!email || !password){
@@ -690,6 +690,33 @@ export const signinController = async (req: Request, res: Response) : Promise<an
         console.error("Error while siginig in : ", error)
         return res.status(500).json({
             message : "Something went wrong while signing in.",
+        })
+    }
+}
+
+
+export const meController = async (req: Request, res: Response) : Promise<any> => {
+    try{
+        const userId = (req.user as TokenPayload).userId;
+        const user = await User.findById({
+            userId
+        }).select("-password");
+
+        if(!user){
+            return res.status(400).json({
+                message : "No such user exist. Try to signin first."
+            });
+        };
+
+        return res.status(200).json({
+            message : "User data fetched successfully.",
+            user
+        })
+
+    }catch(error){
+        console.error("Error while users data: ", error);
+        return res.status(500).json({
+            message : "Internal Server Error."
         })
     }
 }

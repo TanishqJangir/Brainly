@@ -1,8 +1,8 @@
 import express from "express";
 import {
     SignupController,
-    // SigninController,
-    // meController,
+    SigninController,
+    meController,
     VerifyOtpController,
     GenerateOtpController,
     // deleteAccountController,
@@ -57,10 +57,10 @@ router.get("/github/callback", passport.authenticate("github", { session: false,
     });
 
 router.post("/signup", validate(signupSchema), SignupController);
-// router.post("/signin", validate(loginSchema), SigninController);
+router.post("/signin", validate(loginSchema), SigninController);
 router.post("/generate-otp", GenerateOtpController);
 router.post("/verify-otp", VerifyOtpController);
-// router.get("/me", requireAuth, meController);
+router.get("/me", requireAuth, meController);
 // router.delete("/delete-account", requireAuth, deleteAccountController);
 
 // // Profile Update
