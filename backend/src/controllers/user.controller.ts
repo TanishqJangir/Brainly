@@ -482,7 +482,7 @@ import { User } from '../models/User.model';
 // }
 
 
-export const GenerateOtpController = async (req: Request, res: Response): Promise<any> => {
+export const generateOtpController = async (req: Request, res: Response): Promise<any> => {
     const { email } = req.body;
 
     if (!email) {
@@ -527,7 +527,7 @@ export const GenerateOtpController = async (req: Request, res: Response): Promis
 }
 
 
-export const VerifyOtpController = async (req: Request, res: Response): Promise<any> => {
+export const verifyOtpController = async (req: Request, res: Response): Promise<any> => {
     const { email, otp } = req.body;
 
     if (!email || !otp) {
@@ -585,7 +585,7 @@ export const VerifyOtpController = async (req: Request, res: Response): Promise<
 }
 
 
-export const SignupController = async (req: Request, res: Response) : Promise<any> => {
+export const signupController = async (req: Request, res: Response) : Promise<any> => {
     const {name, email, password} = req.body;
 
     if(!name || !email || !password){
@@ -647,7 +647,7 @@ export const SignupController = async (req: Request, res: Response) : Promise<an
 }
 
 
-export const SigninController = async (req: Request, res: Response) : Promise<any> => {
+export const signinController = async (req: Request, res: Response) : Promise<any> => {
     const {email, password} = req.body;
 
     if(!email || !password){
@@ -720,3 +720,60 @@ export const meController = async (req: Request, res: Response) : Promise<any> =
         })
     }
 }
+
+
+export const deleteAccountController = async (req: Request, res: Response) : Promise<any> => {
+    try{
+        const userId = (req.user as TokenPayload).userId;
+        await User.findByIdAndDelete(userId);
+        return res.status(200).json({
+            message : "Account deleted successfully."
+        });
+    }catch(error){
+        console.error("Error while deleting accound: ",error);
+        return res.status(500).json({
+            message : "Internal Server Error.",
+        });
+    };
+};
+
+
+export const updateNameController = async (req: Request, res: Response) : Promise<any> => {
+    const {name} = req.body;
+
+    if(!name || name.trim().length === 0){
+        return res.status(400).json({
+            message : "Name is required.",
+        });
+    };
+
+    try{
+        const userId = (req.user as TokenPayload).userId;
+        const user = await User.findByIdAndUpdate(userId,
+            {
+                $set: {
+                    name : name.trim(),
+                }
+            },
+            {
+                new: true,
+            }
+        );
+
+        if(!user){
+            return res.status(400).json({
+                message : "User does not exist."
+            });
+        };
+
+        return res.status(200).json({
+            message : "Name updated successfully."
+        })
+
+    }catch(error){
+        console.error("Error while updating the name: ", error);
+        return res.status(500).json({
+            message : "Internal Server error."
+        });
+    };
+};

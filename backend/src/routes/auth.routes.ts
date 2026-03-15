@@ -1,15 +1,15 @@
 import express from "express";
 import {
-    SignupController,
-    SigninController,
+    signupController,
+    signinController,
     meController,
-    VerifyOtpController,
-    GenerateOtpController,
-    // deleteAccountController,
+    verifyOtpController,
+    generateOtpController,
+    deleteAccountController,
     // generatePasswordOtpController,
     // verifyPasswordOtpController,
     // updatePasswordController,
-    // updateNameController,
+    updateNameController,
     // forgotPasswordGenerateOtpController,
     // forgotPasswordVerifyOtpController,
     // forgotPasswordResetController
@@ -56,15 +56,15 @@ router.get("/github/callback", passport.authenticate("github", { session: false,
         }
     });
 
-router.post("/signup", validate(signupSchema), SignupController);
-router.post("/signin", validate(loginSchema), SigninController);
-router.post("/generate-otp", GenerateOtpController);
-router.post("/verify-otp", VerifyOtpController);
+router.post("/signup", validate(signupSchema), signupController);
+router.post("/signin", validate(loginSchema), signinController);
+router.post("/generate-otp", generateOtpController);
+router.post("/verify-otp", verifyOtpController);
 router.get("/me", requireAuth, meController);
-// router.delete("/delete-account", requireAuth, deleteAccountController);
+router.delete("/delete-account", requireAuth, deleteAccountController);
 
 // // Profile Update
-// router.put("/name", requireAuth, updateNameController);
+router.put("/name", requireAuth, updateNameController);
 
 // // Password Change Flow (Authenticated)
 // router.post("/password-otp/generate", requireAuth, generatePasswordOtpController);
