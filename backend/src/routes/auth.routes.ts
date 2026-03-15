@@ -6,10 +6,10 @@ import {
     verifyOtpController,
     generateOtpController,
     deleteAccountController,
-    // generatePasswordOtpController,
-    // verifyPasswordOtpController,
-    // updatePasswordController,
     updateNameController,
+    updatePasswordGenerateOtpController,
+    updatePasswordVerifyOtpController,
+    updatePasswordController,
     // forgotPasswordGenerateOtpController,
     // forgotPasswordVerifyOtpController,
     // forgotPasswordResetController
@@ -67,9 +67,9 @@ router.delete("/delete-account", requireAuth, deleteAccountController);
 router.put("/name", requireAuth, updateNameController);
 
 // // Password Change Flow (Authenticated)
-// router.post("/password-otp/generate", requireAuth, generatePasswordOtpController);
-// router.post("/password-otp/verify", requireAuth, verifyPasswordOtpController);
-// router.put("/password", requireAuth, updatePasswordController);
+router.post("/password-otp/generate", requireAuth, updatePasswordGenerateOtpController);
+router.post("/password-otp/verify", requireAuth, updatePasswordVerifyOtpController);
+router.put("/password", requireAuth, updatePasswordController);
 
 // // Forgot Password Flow (Unauthenticated)
 // router.post("/forgot-password/generate", forgotPasswordGenerateOtpController);
