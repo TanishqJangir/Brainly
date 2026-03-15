@@ -645,3 +645,51 @@ export const SignupController = async (req: Request, res: Response) : Promise<an
         })
     }
 }
+
+
+export const signinController = async (req: Request, res: Response) : Promise<any> => {
+    const {email, password} = req.body;
+
+    if(!email || !password){
+        return res.status(400).json({
+            message : "Email and password are required.",
+        });
+    };
+
+    try{
+
+        const user = await User.findOne({
+            email
+        });
+        
+        if(!user || !user.password){
+            return res.status(400).json({
+                message : "Invalid email or password. Try to signup first."
+            })
+        };
+
+        const matchPassword = await bcrypt.compare(password, user.password);
+
+        if(!matchPassword){
+            return res.status(400).json({
+                message : "Incorrect Password",
+            });
+        };
+
+        const token = signToken({
+            userId : user._id.toString(),
+            email : user.email
+    })
+
+    return res.status(200).json({
+        message : "Signed in Successfully.",
+        token : token,
+    })
+
+    }catch(error: any){
+        console.error("Error while siginig in : ", error)
+        return res.status(500).json({
+            message : "Something went wrong while signing in.",
+        })
+    }
+}
