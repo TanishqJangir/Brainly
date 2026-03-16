@@ -63,15 +63,15 @@ router.post("/verify-otp", verifyOtpController);
 router.get("/me", requireAuth, meController);
 router.delete("/delete-account", requireAuth, deleteAccountController);
 
-// // Profile Update
+// Profile Update
 router.put("/name", requireAuth, updateNameController);
 
-// // Password Change Flow (Authenticated)
+// Password Change Flow (Authenticated)
 router.post("/password-otp/generate", requireAuth, updatePasswordGenerateOtpController);
 router.post("/password-otp/verify", requireAuth, updatePasswordVerifyOtpController);
 router.put("/password", requireAuth, updatePasswordController);
 
-// // Forgot Password Flow (Unauthenticated)
+// Forgot Password Flow (Unauthenticated)
 router.post("/forgot-password/generate", forgotPasswordGenerateOtpController);
 router.post("/forgot-password/verify", forgotPasswordVerifyOtpController);
 router.post("/forgot-password/reset", forgotPasswordResetController);
