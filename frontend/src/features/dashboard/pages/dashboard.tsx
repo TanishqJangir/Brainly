@@ -18,7 +18,6 @@ const Dashboard = () => {
 
 
     const handleCardClick = (card: CardProps) => {
-        console.log("Selected card for Modal:", card)
         setSelectedCard(card);
         setCardModalOpen(true);
     };
@@ -29,7 +28,7 @@ const Dashboard = () => {
             {addContentmodalOpen && <AddContentModal setModalOpen={setAddContentModalOpen} onSuccess={refresh} />}
             {cardModalOpen && selectedCard && <CardModal {...selectedCard} setModalOpen={setCardModalOpen} onSuccess={refresh} />}
             <div className="relative shrink-0 z-30">
-                <Sidebar collapsed={collapsed} />
+                <Sidebar collapsed={collapsed} refreshKey={refreshKey} onSuccess={refresh} />
                 <button
                     onClick={() => setCollapsed(prev => !prev)}
                     title={collapsed ? "Expand sidebar" : "Collapse sidebar"}

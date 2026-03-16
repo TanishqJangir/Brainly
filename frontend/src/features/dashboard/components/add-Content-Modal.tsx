@@ -42,7 +42,6 @@ const AddContentModal = ({ setModalOpen, onSuccess }: ModalProps) => {
 
         try {
             const token = localStorage.getItem("token");
-            console.log(token);
             const response = await axios.post("http://localhost:8000/api/v1/vault", {
                 title,
                 description,
@@ -56,15 +55,12 @@ const AddContentModal = ({ setModalOpen, onSuccess }: ModalProps) => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-            console.log("below response")
             const data = response.data;
-            console.log(data)
 
             toast.success(data.message, {
                 duration: 4000,
                 icon: null
             });
-            console.log("Content added successfully:")
             setLoading(false);
             onSuccess();
             setModalOpen(false);

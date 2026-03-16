@@ -58,9 +58,11 @@ const navItems = [
 
 interface SidebarProps {
     collapsed?: boolean;
+    refreshKey ?: number;
+    onSuccess : () => void;
 }
 
-const Sidebar = ({ collapsed = false }: SidebarProps) => {
+const Sidebar = ({ collapsed = false, refreshKey, onSuccess }: SidebarProps) => {
     const location = useLocation();
     const [active, setActive] = useState(location.pathname);
     const [settingsModal, setSettingsModal] = useState(false);
@@ -81,13 +83,14 @@ const Sidebar = ({ collapsed = false }: SidebarProps) => {
             setUserData(user);
         }
         getUser();
-    }, []);
+    }, [refreshKey]);
 
     return (
         <>
             {settingsModal && (
                 <Settings
                     onOpen={settingsModal}
+                    onSuccess={onSuccess}
                     onClose={(val) => {
                         setSettingsModal(val);
                         setActive(previousPath);

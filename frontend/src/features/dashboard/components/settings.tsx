@@ -10,16 +10,16 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import loadingSpinner from "../../../assets/logos/loading.png";
 
-const Settings = ({ onOpen, onClose, userData }: {
+const Settings = ({ onOpen, onClose, userData, onSuccess }: {
     onOpen: boolean;
     onClose: (open: boolean) => void;
     userData: any;
+    onSuccess: () => void;
 }) => {
     const [isDark, setIsDark] = useState(() => isDarkMode());
     const isOAuthUser = (userData?.passwordLength ?? 0) === 0;
     const [isEditingName, setIsEditingName] = useState(false);
 
-    // Password flow states
     const [passwordStage, setPasswordStage] = useState<"idle" | "otp" | "new_password">("idle");
     const [otpInput, setOtpInput] = useState("");
     const [editPassword, setEditPassword] = useState("");
@@ -37,12 +37,12 @@ const Settings = ({ onOpen, onClose, userData }: {
 
     const handleLogout = () => {
         setIsLoggingOut(true);
-        // Add a tiny artificial delay so spinner is visible before redirect
         setTimeout(() => {
             localStorage.removeItem("token");
             toast.success("Logged out successfully!");
             navigate("/login");
         }, 500);
+        setIsLoggingOut(false);
     };
 
     const handleSaveName = async () => {
@@ -54,6 +54,7 @@ const Settings = ({ onOpen, onClose, userData }: {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setName(editName);
+            onSuccess();
             setIsEditingName(false);
             toast.success("Name updated successfully!");
         } catch (error: any) {
@@ -211,7 +212,7 @@ const Settings = ({ onOpen, onClose, userData }: {
                                         onChange={(e) => setEditName(e.target.value)}
                                         className="flex-1 px-3 py-2 rounded-lg text-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand/50"
                                     />
-                                    <button onClick={handleSaveName} disabled={isSavingName} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[50px]">
+                                    <button onClick={handleSaveName} disabled={isSavingName} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-12.5">
                                         {isSavingName ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin brightness-0 invert" /> : "Save"}
                                     </button>
                                     <button onClick={() => setIsEditingName(false)} disabled={isSavingName} className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-white cursor-pointer disabled:opacity-50">Cancel</button>
@@ -253,7 +254,7 @@ const Settings = ({ onOpen, onClose, userData }: {
                                             placeholder="Enter 6-digit OTP"
                                             className="flex-1 px-3 py-2 rounded-lg text-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand/50"
                                         />
-                                        <button onClick={handleVerifyPasswordOtp} disabled={isVerifyingOtp} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[50px]">
+                                        <button onClick={handleVerifyPasswordOtp} disabled={isVerifyingOtp} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-12.5">
                                             {isVerifyingOtp ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin brightness-0 invert" /> : "Verify"}
                                         </button>
                                         <button onClick={handleCancelPasswordEdit} disabled={isVerifyingOtp} className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-white cursor-pointer disabled:opacity-50">Cancel</button>
@@ -270,7 +271,7 @@ const Settings = ({ onOpen, onClose, userData }: {
                                             placeholder="Enter new password"
                                             className="flex-1 px-3 py-2 rounded-lg text-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand/50"
                                         />
-                                        <button onClick={handleSavePassword} disabled={isSavingPassword} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[50px]">
+                                        <button onClick={handleSavePassword} disabled={isSavingPassword} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand text-white hover:bg-brand/90 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-12.5">
                                             {isSavingPassword ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin brightness-0 invert" /> : "Save"}
                                         </button>
                                         <button onClick={handleCancelPasswordEdit} disabled={isSavingPassword} className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-white cursor-pointer disabled:opacity-50">Cancel</button>
@@ -282,7 +283,7 @@ const Settings = ({ onOpen, onClose, userData }: {
                                         <span className="text-sm font-medium text-gray-800 dark:text-gray-200 tracking-widest">
                                             {"•".repeat(userData?.passwordLength ?? 0)}
                                         </span>
-                                        <button onClick={handleRequestPasswordOtp} disabled={isRequestingOtp} className="text-gray-400 hover:text-brand transition cursor-pointer disabled:opacity-50 flex items-center justify-center min-w-[20px]">
+                                        <button onClick={handleRequestPasswordOtp} disabled={isRequestingOtp} className="text-gray-400 hover:text-brand transition cursor-pointer disabled:opacity-50 flex items-center justify-center min-w-5">
                                             {isRequestingOtp ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin opacity-50 dark:invert" /> : <EditIcon className="size-4" />}
                                         </button>
                                     </div>
@@ -291,7 +292,7 @@ const Settings = ({ onOpen, onClose, userData }: {
                         )}
                     </div>
 
-                    {/* Divider */}
+                    
                     <div className="border-t border-gray-100 dark:border-white/10" />
 
                     {/* Appearance */}
@@ -315,7 +316,6 @@ const Settings = ({ onOpen, onClose, userData }: {
                         </button>
                     </div>
 
-                    {/* Divider */}
                     <div className="border-t border-gray-100 dark:border-white/10" />
 
                     {/* Share Vault */}
@@ -332,14 +332,13 @@ const Settings = ({ onOpen, onClose, userData }: {
                         </button>
                     </div>
 
-                    {/* Danger Zone */}
                     <div className="mt-2 flex flex-col gap-2">
                         {/* Logout */}
                         {!confirmDelete && (
                             <button
                                 onClick={handleLogout}
                                 disabled={isLoggingOut}
-                                className="w-full py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition cursor-pointer disabled:opacity-50 flex items-center justify-center min-h-[40px]"
+                                className="w-full py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition cursor-pointer disabled:opacity-50 flex items-center justify-center min-h-10"
                             >
                                 {isLoggingOut ? <img src={loadingSpinner} alt="Loading" className="size-5 animate-spin opacity-50 dark:invert" /> : "Log out"}
                             </button>
@@ -355,7 +354,7 @@ const Settings = ({ onOpen, onClose, userData }: {
                                     <button
                                         onClick={handleDeleteAccount}
                                         disabled={isDeletingAccount}
-                                        className="flex-1 flex justify-center items-center py-2 min-h-[36px] rounded-lg text-xs font-semibold text-white bg-red-500 hover:bg-red-600 transition cursor-pointer shadow-sm shadow-red-500/20 disabled:opacity-50"
+                                        className="flex-1 flex justify-center items-center py-2 min-h-9 rounded-lg text-xs font-semibold text-white bg-red-500 hover:bg-red-600 transition cursor-pointer shadow-sm shadow-red-500/20 disabled:opacity-50"
                                     >
                                         {isDeletingAccount ? <img src={loadingSpinner} alt="Loading" className="size-4 animate-spin brightness-0 invert" /> : "Delete"}
                                     </button>
