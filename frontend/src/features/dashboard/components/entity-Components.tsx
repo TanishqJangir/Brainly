@@ -25,7 +25,7 @@ export const EntityHeader = ({ setModalOpen, searchQuery, setSearchQuery }: { se
                 <p className="text-sm text-gray-500 dark:text-gray-400">Manage and organize your digital assets</p>
             </div>
             <div className="flex items-center">
-                <Input type="text" placeholder="Search your vault..." className="w-72! rounded-full! py-2.5 dark:text-white text-black " value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                <Input type="text" placeholder="Search your vault..." className="w-72! rounded-full! py-2.5 dark:text-white text-black placeholder:text-gray-400 dark:placeholder:text-gray-500 " value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 <Button
                     variant="primary"
                     className="ml-4 rounded-full font-medium md:gap-2 gap-1 md:px-6 px-3 "
@@ -115,7 +115,6 @@ export const EntityContainer = ({ onCardClick, refreshKey, onSuccess, searchQuer
                     createdAt={content.createdAt}
                     onSuccess={onSuccess}
                     onClick={() => {
-                        console.log("Card clicked:", content);
                         onCardClick({ ...content, contentId: content._id })
                     }}
                 />

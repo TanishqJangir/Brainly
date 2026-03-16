@@ -18,7 +18,7 @@ export const createShareLinkController = async (req: Request, res: Response): Pr
                 shareLinkExpiry: shareLinkExpiry,
             },
         }, {
-            new: true,
+            returnDocument: "after",
         });
 
         if (!user) {

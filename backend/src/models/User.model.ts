@@ -8,7 +8,7 @@ const UserSchema = new Schema({
     providerId: { type: String },
     avatar: { type: String },
     isEmailVerified: { type: Boolean, default: false },
-    shareLink: { type: String, unique: true, default: null },
+    shareLink: { type: String, unique: true, default: null, sparse: true },
     shareLinkExpiry: { type: Date, default: null },
 }, {
     timestamps: true

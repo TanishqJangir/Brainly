@@ -37,15 +37,13 @@ const SignupForm = () => {
         setLoading(true);
         try {
             const { data } = await axios.post(`${BACKEND_URL}/api/v1/auth/signup`, { name, email, password });
+            
             toast.success(data.message);
             localStorage.setItem("token", data.token);
             navigate("/dashboard");
         } catch (err: any) {
             const message: string = err.response?.data?.message || "Something went wrong. Please try again.";
-            const lower = message.toLowerCase();
-            if (lower.includes("name")) setNameError(message);
-            else if (lower.includes("password")) setPasswordError(message);
-            else toast.error(message);
+            toast.error(message);
         } finally {
             setLoading(false);
         }

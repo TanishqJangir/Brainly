@@ -33,7 +33,7 @@ export const generateOtpController = async (req: Request, res: Response): Promis
             },
             {
                 upsert: true,
-                new: true
+                returnDocument: "after",
             }
         );
 
@@ -164,9 +164,9 @@ export const signupController = async (req: Request, res: Response): Promise<any
         })
 
     } catch (error: any) {
+        console.error("Error while signing up: ", error);
         return res.status(500).json({
-            message: "Some error occured while signing up",
-            error: error.message
+            message: "Internal Server Error.",
         })
     }
 };
@@ -223,9 +223,7 @@ export const signinController = async (req: Request, res: Response): Promise<any
 export const meController = async (req: Request, res: Response): Promise<any> => {
     try {
         const userId = (req.user as TokenPayload).userId;
-        const user = await User.findById({
-            userId
-        }).select("-password");
+        const user = await User.findById(userId).select("-password");
 
         if (!user) {
             return res.status(400).json({
@@ -233,9 +231,13 @@ export const meController = async (req: Request, res: Response): Promise<any> =>
             });
         };
 
+        const passwordData = await User.findById(userId).select("password");
+        const passwordLength = passwordData?.password ? 8 : 0;
+
         return res.status(200).json({
             message: "User data fetched successfully.",
-            user
+            user,
+            passwordLength
         })
 
     } catch (error) {
@@ -281,7 +283,7 @@ export const updateNameController = async (req: Request, res: Response): Promise
                 }
             },
             {
-                new: true,
+                returnDocument: "after",
             }
         );
 
@@ -329,7 +331,7 @@ export const updatePasswordGenerateOtpController = async (req: Request, res: Res
             }
         }, {
             upsert: true,
-            new: true,
+            returnDocument: "after",
         })
 
         await sendOtpEmail(user.email, otp);
@@ -461,7 +463,7 @@ export const updatePasswordController = async (req: Request, res: Response): Pro
                 password: hashedNewPassword,
             }
         }, {
-            new: true,
+            returnDocument: "after",
         });
 
         await otpRecord.deleteOne();
@@ -511,7 +513,7 @@ export const forgotPasswordGenerateOtpController = async (req: Request, res: Res
                 isVerified: false,
             }
         }, {
-            new: true,
+            returnDocument: "after",
             upsert: true,
         });
 
@@ -574,7 +576,7 @@ export const forgotPasswordVerifyOtpController = async (req: Request, res: Respo
                 isVerified: true,
             }
         }, {
-            new: true,
+            returnDocument: "after",
         });
 
         return res.status(200).json({
