@@ -12,5 +12,6 @@ const VaultSchema = new Schema({
     timestamps: true
 });
 
+VaultSchema.index({ userId: 1, url: 1 }, { unique: true });
 
 export const Vault = mongoose.model("Vault", VaultSchema);

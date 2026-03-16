@@ -5,11 +5,13 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        res.status(401).json({ message: 'Authorization header missing or malformed' });
+        res.status(401).json({
+            message: "Authorization header is missing or malformed"
+        });
         return;
-    }
+    };
 
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.split(" ")[1];
 
     try {
         const decoded = verifyToken(token);
@@ -17,8 +19,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
         next();
     } catch (error) {
         res.status(401).json({
-            message: 'Invalid or expired token'
+            message: "Invalid or expired token"
         });
-        return;
-    }
+    };
 };
