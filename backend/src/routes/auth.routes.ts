@@ -10,9 +10,9 @@ import {
     updatePasswordGenerateOtpController,
     updatePasswordVerifyOtpController,
     updatePasswordController,
-    // forgotPasswordGenerateOtpController,
-    // forgotPasswordVerifyOtpController,
-    // forgotPasswordResetController
+    forgotPasswordGenerateOtpController,
+    forgotPasswordVerifyOtpController,
+    forgotPasswordResetController
 } from "../controllers/user.controller";
 import { requireAuth } from "../middlewares/auth.middleware";
 import { validate } from "../middlewares/validate.middleware";
@@ -72,9 +72,9 @@ router.post("/password-otp/verify", requireAuth, updatePasswordVerifyOtpControll
 router.put("/password", requireAuth, updatePasswordController);
 
 // // Forgot Password Flow (Unauthenticated)
-// router.post("/forgot-password/generate", forgotPasswordGenerateOtpController);
-// router.post("/forgot-password/verify", forgotPasswordVerifyOtpController);
-// router.post("/forgot-password/reset", forgotPasswordResetController);
+router.post("/forgot-password/generate", forgotPasswordGenerateOtpController);
+router.post("/forgot-password/verify", forgotPasswordVerifyOtpController);
+router.post("/forgot-password/reset", forgotPasswordResetController);
 
 
 export default router;

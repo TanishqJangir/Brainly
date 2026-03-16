@@ -952,3 +952,176 @@ export const updatePasswordController = async (req: Request, res: Response) : Pr
         })
     }
 }
+
+
+export const forgotPasswordGenerateOtpController = async (req: Request, res: Response) : Promise<any> => {
+
+    const {email} = req.body;
+
+    if(!email){
+        return res.status(400).json({
+            message : "Email is required"
+        });
+    };
+
+    try{
+        const user = await User.findOne({ email });
+
+        if(!user){
+            return res.status(400).json({
+                message : "User does not exist."
+            });
+        };
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+        await Otp.findOneAndUpdate({
+            email
+        }, {
+            $set: {
+                email : email,
+                otp : hashedOtp,
+                otpExpiry : new Date(Date.now() + 5 * 60 * 1000),
+                isVerified : false,
+            }
+        },{
+            new : true,
+            upsert: true,
+        });
+
+        await sendOtpEmail(email, otp);
+
+        return res.status(200).json({
+            message : `Otp send to ${email} successfully.`
+        });
+    }catch(error : any){
+        console.error("Error while gererating otp to reset Password: ", error);
+        return res.status(500).json({
+            message : "Internal Server Error.",
+        });
+    };
+};
+
+
+export const forgotPasswordVerifyOtpController = async (req: Request, res: Response) : Promise<any> => {
+    const { email , otp } = req.body;
+
+    if(!email || !otp){
+        return res.status(400).json({
+            message : "Email and otp are required."
+        });
+    };
+
+    try{
+        const otpRecord = await Otp.findOne({ email });
+
+        if(!otpRecord){
+            return res.status(400).json({
+                message : "Otp not found. Please generate otp first.",
+            });
+        };
+
+        if(!otpRecord.otp){
+            return res.status(400).json({
+                message : "Otp not found or already verified.",
+            });
+        };
+
+        if(otpRecord.otpExpiry.getTime() < Date.now()){
+            return res.status(400).json({
+                message : "Otp Expired.",
+            });
+        };
+
+        const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+        if(hashedOtp !== otpRecord.otp){
+            return res.status(400).json({
+                message : "Invalid Otp.",
+            });
+        };
+
+        await Otp.findOneAndUpdate({
+            email
+        },{
+            $set: {
+                isVerified: true,
+            }
+        },{
+            new: true,
+        });
+
+        return res.status(200).json({
+            message : "Otp verified successfully."
+        });
+
+    }catch(error: any){
+        console.error("Error while verifying the otp for reset Password: ", error);
+
+        return res.status(500).json({
+            message : "Internal Server Error."
+        });
+    };
+};
+
+
+export const forgotPasswordResetController = async (req: Request, res: Response) : Promise<any> => {
+    const { email, newPassword } = req.body;
+
+    if(!email || !newPassword){
+        return res.status(400).json({
+            message : "Email and new Password are required.",
+        });
+    };
+
+    if(newPassword.length < 8){
+        return res.status(400).json({
+            message : "Password must be at least 8 characters long.",
+        })
+    }
+
+    try{
+        const user = await User.findOne({ email });
+
+        if(!user){
+            return res.status(400).json({
+                message : "User does not exist."
+            });
+        };
+
+        const otpRecord = await Otp.findOne({ email });
+
+        if(!otpRecord){
+            return res.status(400).json({
+                message : "Otp not found. Try to generate otp first.",
+            });
+        };
+
+        if(!otpRecord.isVerified){
+            return res.status(400).json({
+                message : "Otp is not verified. First verify it."
+            });
+        };
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await User.updateOne({ email }, {
+            $set : {
+                password : hashedPassword,
+            }
+        });
+
+        await otpRecord.deleteOne();
+
+        return res.status(200).json({
+            message : "Password reset successfully.",
+        });
+
+    }catch(error){
+        console.error("Error while reseting the password: ", error);
+        return res.status(500).json({
+            message : "Internal Server Error."
+        });
+    };
+};
