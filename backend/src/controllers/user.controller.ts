@@ -7,481 +7,6 @@ import { sendOtpEmail } from '../utils/sendEmail';
 import { User } from '../models/User.model';
 
 
-// export const SignupController = async (req: Request, res: Response): Promise<any> => {
-//     const { name, email, password } = req.body;
-
-//     if (!name || !email || !password) {
-//         return res.status(400).json({ message: 'All fields are required' });
-//     }
-
-//     try {
-
-//         const existingUser = await User.findOne({
-//             email: email
-//         });
-
-//         if (existingUser && existingUser.isEmailVerified && existingUser.name !== '__pending__') {
-//             return res.status(400).json({ message: 'User already exists' });
-//         }
-
-//         if (existingUser && existingUser.isEmailVerified) {
-//             const hashedPassword = await bcrypt.hash(password, 10);
-//             await User.findByIdAndUpdate(existingUser._id, { name, password: hashedPassword });
-
-//             const token = signToken({ userId: existingUser._id.toString(), email: existingUser.email });
-
-//             return res.status(200).json({
-//                 message: "Account created successfully!",
-//                 token
-//             });
-//         }
-
-//         if (!existingUser) {
-//             return res.status(400).json({ message: 'Please verify your email first' });
-//         }
-
-//         return res.status(400).json({ message: 'Please verify your email before completing signup' });
-
-//     } catch (error) {
-//         console.error('Error during signup:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// }
-
-// export const GenerateOtpController = async (req: Request, res: Response): Promise<any> => {
-//     const { email } = req.body;
-
-//     if (!email) {
-//         return res.status(400).json({ message: "Email is required" });
-//     }
-
-//     try {
-//         // Reject only real verified accounts, not __pending__ temp docs
-//         const existingVerified = await User.findOne({ email, isEmailVerified: true });
-//         if (existingVerified && existingVerified.name !== '__pending__') {
-//             return res.status(400).json({ message: "An account with this email already exists" });
-//         }
-
-//         const otp = Math.floor(100000 + Math.random() * 900000).toString();
-//         const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-//         const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-
-//         await User.findOneAndUpdate(
-//             { email },
-//             {
-//                 $set: { otp: hashedOtp, otpExpiry, isEmailVerified: false },
-//                 $setOnInsert: { name: "__pending__" }
-//             },
-//             { upsert: true, returnDocument: 'after', runValidators: false }
-//         );
-
-//         await sendOtpEmail(email, otp);
-
-//         return res.status(200).json({ message: "OTP sent to your email." });
-//     } catch (error) {
-//         console.error("Error generating OTP:", error);
-//         return res.status(500).json({ message: "Internal server error" });
-//     }
-// };
-
-// export const VerifyOtpController = async (req: Request, res: Response): Promise<any> => {
-//     const { email, otp } = req.body;
-
-//     if (!email || !otp) {
-//         return res.status(400).json({
-//             message: "Email and OTP are required"
-//         });
-//     }
-
-//     try {
-
-//         const user = await User.findOne({ email });
-
-//         if (!user) {
-//             return res.status(404).json({
-//                 message: "User not found"
-//             });
-//         }
-
-//         if (!user.otp || !user.otpExpiry) {
-//             return res.status(400).json({
-//                 message: "OTP not found or already verified"
-//             });
-//         }
-
-//         const hashedOtp = crypto
-//             .createHash("sha256")
-//             .update(otp)
-//             .digest("hex");
-
-//         if (user.otp !== hashedOtp) {
-//             return res.status(400).json({
-//                 message: "Invalid OTP"
-//             });
-//         }
-
-//         if (!user.otpExpiry || user.otpExpiry.getTime() < Date.now()) {
-//             return res.status(400).json({
-//                 message: "OTP expired"
-//             });
-//         }
-
-//         await User.findByIdAndUpdate(user._id, {
-//             $set: { isEmailVerified: true },
-//             $unset: { otp: "", otpExpiry: "" }
-//         });
-
-//         return res.status(200).json({
-//             message: "Email verified successfully. Please complete your registration."
-//         });
-
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({
-//             message: "Internal server error"
-//         });
-//     }
-// };
-
-
-// export const SigninController = async (req: Request, res: Response): Promise<any> => {
-//     const { email, password } = req.body;
-
-//     if (!email || !password) {
-//         return res.status(400).json({
-//             message: 'Email and password are required'
-//         });
-//     };
-
-//     try {
-//         const user = await User.findOne({ email });
-
-//         if (!user) {
-//             return res.status(400).json({
-//                 message: "Invalid email and password"
-//             })
-//         }
-
-//         if (!user.password) {
-//             return res.status(401).json({
-//                 message: "Password is missing. Please login with your OAuth provider."
-//             });
-//         }
-
-//         if (!user.isEmailVerified) {
-//             return res.status(403).json({
-//                 message: "Please verify your email first"
-//             });
-//         }
-
-//         const isPasswordValid = await bcrypt.compare(password, user.password);
-
-//         if (!isPasswordValid) {
-//             return res.status(401).json({
-//                 message: "Invalid Password"
-//             })
-//         };
-
-//         const token = signToken({ userId: user._id.toString(), email: user.email });
-
-//         return res.status(200).json({
-//             message: "Logged in successfully",
-//             token
-//         })
-//     } catch (error) {
-//         console.error('Error during signin:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// };
-
-
-
-// export const meController = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const user = await User.findById((req.user as TokenPayload).userId).select("-password");
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-//         const passwordData = await User.findById((req.user as TokenPayload).userId).select("password").lean();
-//         const passwordLength = passwordData?.password ? 8 : 0;
-//         return res.status(200).json({ user, passwordLength });
-//     } catch (error) {
-//         console.error('Error fetching user details:', error);
-//         res.status(500).json({ message: "Internal server error" });
-//     }
-// };
-
-// export const deleteAccountController = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const userId = (req.user as TokenPayload).userId;
-//         await User.findByIdAndDelete(userId);
-//         return res.status(200).json({ message: "Account deleted successfully" });
-//     } catch (error) {
-//         console.error('Error deleting account:', error);
-//         res.status(500).json({ message: "Internal server error" });
-//     }
-// };
-
-
-// export const generatePasswordOtpController = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const userId = (req.user as TokenPayload).userId;
-//         const user = await User.findById(userId);
-
-//         if (!user) {
-//             return res.status(404).json({
-//                 message: "User not found."
-//             })
-//         }
-
-//         const passwordOtp = Math.floor(100000 + Math.random() * 900000).toString();
-//         const hashedOtp = crypto.createHash("sha256").update(passwordOtp).digest("hex");
-//         const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-
-//         await User.findByIdAndUpdate(userId, {
-//             $set: {
-//                 otp: hashedOtp,
-//                 otpExpiry
-//             }
-//         })
-
-//         await sendOtpEmail(user.email, passwordOtp);
-
-//         return res.status(200).json({
-//             message: "OTP sent successfully."
-//         });
-
-//     } catch (error) {
-//         console.error('Error generating password OTP:', error);
-//         return res.status(500).json({
-//             message: "Internal server error"
-//         });
-//     }
-// }
-
-// export const verifyPasswordOtpController = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const userId = (req.user as TokenPayload).userId;
-//         const { otp } = req.body;
-
-//         if (!otp) {
-//             return res.status(400).json({ message: "OTP is required" });
-//         }
-
-//         const user = await User.findById(userId);
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-
-//         if (!user.otp || !user.otpExpiry) {
-//             return res.status(400).json({ message: "No OTP requested or OTP already used" });
-//         }
-
-//         const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-
-//         if (user.otp !== hashedOtp) {
-//             return res.status(400).json({ message: "Invalid OTP" });
-//         }
-
-//         if (user.otpExpiry.getTime() < Date.now()) {
-//             return res.status(400).json({ message: "OTP expired" });
-//         }
-
-//         return res.status(200).json({ message: "OTP verified successfully" });
-
-//     } catch (error) {
-//         console.error('Error verifying password OTP:', error);
-//         return res.status(500).json({ message: "Internal server error" });
-//     }
-// }
-
-// export const updatePasswordController = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const userId = (req.user as TokenPayload).userId;
-//         const { otp, newPassword } = req.body;
-
-//         if (!otp || !newPassword) {
-//             return res.status(400).json({ message: "OTP and new password are required" });
-//         }
-
-//         if (newPassword.length < 6) {
-//             return res.status(400).json({ message: "Password must be at least 6 characters long" });
-//         }
-
-//         const user = await User.findById(userId);
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-
-//         if (!user.otp || !user.otpExpiry) {
-//             return res.status(400).json({ message: "No valid OTP found. Please request a new one." });
-//         }
-
-//         const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-//         if (user.otp !== hashedOtp || user.otpExpiry.getTime() < Date.now()) {
-//             return res.status(400).json({ message: "Invalid or expired OTP" });
-//         }
-
-//         const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-//         await User.findByIdAndUpdate(userId, {
-//             $set: { password: hashedPassword },
-//             $unset: { otp: "", otpExpiry: "" }
-//         });
-
-//         return res.status(200).json({ message: "Password updated successfully" });
-
-//     } catch (error) {
-//         console.error('Error updating password:', error);
-//         return res.status(500).json({ message: "Internal server error" });
-//     }
-// }
-
-// export const updateNameController = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const userId = (req.user as TokenPayload).userId;
-//         const { name } = req.body;
-
-//         if (!name || name.trim().length === 0) {
-//             return res.status(400).json({ message: "Name is required" });
-//         }
-
-//         const user = await User.findById(userId);
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-
-//         await User.findByIdAndUpdate(userId, {
-//             $set: { name: name.trim() }
-//         });
-
-//         return res.status(200).json({ message: "Name updated successfully", name: name.trim() });
-
-//     } catch (error) {
-//         console.error('Error updating name:', error);
-//         return res.status(500).json({ message: "Internal server error" });
-//     }
-// }
-
-
-// export const forgotPasswordGenerateOtpController = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const { email } = req.body;
-//         if (!email) {
-//             return res.status(400).json({ message: "Email is required" });
-//         }
-
-//         const user = await User.findOne({ email });
-//         if (!user) {
-//             // Return success even if not found to prevent email enumeration,
-//             // but for simplicity/UX we can return an error here.
-//             return res.status(404).json({ message: "User with this email not found" });
-//         }
-
-//         if (user.provider && user.provider !== "local") {
-//             return res.status(400).json({ message: `Please login with your ${user.provider} account.` });
-//         }
-
-//         const passwordOtp = Math.floor(100000 + Math.random() * 900000).toString();
-//         const hashedOtp = crypto.createHash("sha256").update(passwordOtp).digest("hex");
-//         const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-//         await User.findByIdAndUpdate(user._id, {
-//             $set: {
-//                 otp: hashedOtp,
-//                 otpExpiry
-//             }
-//         });
-
-//         await sendOtpEmail(user.email, passwordOtp);
-
-//         return res.status(200).json({
-//             message: "Password reset OTP sent to your email."
-//         });
-
-//     } catch (error) {
-//         console.error('Error generating forgot password OTP:', error);
-//         return res.status(500).json({ message: "Internal server error" });
-//     }
-// }
-
-// export const forgotPasswordVerifyOtpController = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const { email, otp } = req.body;
-
-//         if (!email || !otp) {
-//             return res.status(400).json({ message: "Email and OTP are required" });
-//         }
-
-//         const user = await User.findOne({ email });
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-
-//         if (!user.otp || !user.otpExpiry) {
-//             return res.status(400).json({ message: "No OTP requested or OTP already used" });
-//         }
-
-//         const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-
-//         if (user.otp !== hashedOtp) {
-//             return res.status(400).json({ message: "Invalid OTP" });
-//         }
-
-//         if (user.otpExpiry.getTime() < Date.now()) {
-//             return res.status(400).json({ message: "OTP expired" });
-//         }
-
-//         return res.status(200).json({ message: "OTP verified successfully" });
-
-//     } catch (error) {
-//         console.error('Error verifying forgot password OTP:', error);
-//         return res.status(500).json({ message: "Internal server error" });
-//     }
-// }
-
-// export const forgotPasswordResetController = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const { email, otp, newPassword } = req.body;
-
-//         if (!email || !otp || !newPassword) {
-//             return res.status(400).json({ message: "Email, OTP, and new password are required" });
-//         }
-
-//         if (newPassword.length < 6) {
-//             return res.status(400).json({ message: "Password must be at least 6 characters long" });
-//         }
-
-//         const user = await User.findOne({ email });
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-
-//         if (!user.otp || !user.otpExpiry) {
-//             return res.status(400).json({ message: "No valid OTP found. Please request a new one." });
-//         }
-
-//         const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-//         if (user.otp !== hashedOtp || user.otpExpiry.getTime() < Date.now()) {
-//             return res.status(400).json({ message: "Invalid or expired OTP" });
-//         }
-
-//         const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-//         await User.findByIdAndUpdate(user._id, {
-//             $set: { password: hashedPassword },
-//             $unset: { otp: "", otpExpiry: "" }
-//         });
-
-//         return res.status(200).json({ message: "Password updated successfully" });
-
-//     } catch (error) {
-//         console.error('Error resetting password:', error);
-//         return res.status(500).json({ message: "Internal server error" });
-//     }
-// }
-
-
 export const generateOtpController = async (req: Request, res: Response): Promise<any> => {
     const { email } = req.body;
 
@@ -524,7 +49,7 @@ export const generateOtpController = async (req: Request, res: Response): Promis
             error: error,
         })
     }
-}
+};
 
 
 export const verifyOtpController = async (req: Request, res: Response): Promise<any> => {
@@ -541,67 +66,67 @@ export const verifyOtpController = async (req: Request, res: Response): Promise<
             email
         });
 
-        if(!user){
+        if (!user) {
             return res.status(404).json({
                 message: "Firse Generate the otp."
             })
         }
 
-        if(!user.otp || !user.otpExpiry){
+        if (!user.otp || !user.otpExpiry) {
             return res.status(400).json({
-                message : "Otp not found or already verified."
+                message: "Otp not found or already verified."
             })
         };
 
         const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
-        if(hashedOtp !== user.otp){
+        if (hashedOtp !== user.otp) {
             return res.status(400).json({
-                message : "Invalid Otp"
+                message: "Invalid Otp"
             })
         };
 
-        if(user.otpExpiry.getTime() < Date.now()){
+        if (user.otpExpiry.getTime() < Date.now()) {
             return res.status(400).json({
-                message : "Otp expired"
+                message: "Otp expired"
             })
         }
 
-        await Otp.updateOne({email}, {
-            $set:{
-                isVerified : true
+        await Otp.updateOne({ email }, {
+            $set: {
+                isVerified: true
             }
         })
 
         return res.status(200).json({
-            message : "Email Verified successfully."
+            message: "Email Verified successfully."
         })
     } catch (error) {
         return res.status(500).json({
-            message : "Something went wrong while verifying the otp.",
+            message: "Something went wrong while verifying the otp.",
         })
 
     }
-}
+};
 
 
-export const signupController = async (req: Request, res: Response) : Promise<any> => {
-    const {name, email, password} = req.body;
+export const signupController = async (req: Request, res: Response): Promise<any> => {
+    const { name, email, password } = req.body;
 
-    if(!name || !email || !password){
+    if (!name || !email || !password) {
         return res.status(400).json({
-            message : "Name, Email and Password are required."
+            message: "Name, Email and Password are required."
         })
     }
 
-    try{
+    try {
         const existingUser = await User.findOne({
             email
         })
 
-        if(existingUser){
+        if (existingUser) {
             return res.status(400).json({
-                message : "User already exists."
+                message: "User already exists."
             })
         }
 
@@ -609,9 +134,9 @@ export const signupController = async (req: Request, res: Response) : Promise<an
             email
         })
 
-        if(!Otpverifed || Otpverifed?.isVerified === false){
+        if (!Otpverifed || Otpverifed?.isVerified === false) {
             return res.status(400).json({
-                message : "Email is not verified"
+                message: "Email is not verified"
             })
         }
 
@@ -620,7 +145,7 @@ export const signupController = async (req: Request, res: Response) : Promise<an
         const user = await User.create({
             name,
             email,
-            password : hashedPassword,
+            password: hashedPassword,
             isEmailVerified: true
         })
 
@@ -634,125 +159,125 @@ export const signupController = async (req: Request, res: Response) : Promise<an
         })
 
         return res.status(201).json({
-            message : "You are successfully signed up.",
+            message: "You are successfully signed up.",
             token
         })
 
-    }catch(error: any){
+    } catch (error: any) {
         return res.status(500).json({
-            message : "Some error occured while signing up",
-            error : error.message
+            message: "Some error occured while signing up",
+            error: error.message
         })
     }
-}
+};
 
 
-export const signinController = async (req: Request, res: Response) : Promise<any> => {
-    const {email, password} = req.body;
+export const signinController = async (req: Request, res: Response): Promise<any> => {
+    const { email, password } = req.body;
 
-    if(!email || !password){
+    if (!email || !password) {
         return res.status(400).json({
-            message : "Email and password are required.",
+            message: "Email and password are required.",
         });
     };
 
-    try{
+    try {
 
         const user = await User.findOne({
             email
         });
-        
-        if(!user || !user.password){
+
+        if (!user || !user.password) {
             return res.status(400).json({
-                message : "Invalid email or password. Try to signup first."
+                message: "Invalid email or password. Try to signup first."
             })
         };
 
         const matchPassword = await bcrypt.compare(password, user.password);
 
-        if(!matchPassword){
+        if (!matchPassword) {
             return res.status(400).json({
-                message : "Incorrect Password",
+                message: "Incorrect Password",
             });
         };
 
         const token = signToken({
-            userId : user._id.toString(),
-            email : user.email
-    })
+            userId: user._id.toString(),
+            email: user.email
+        })
 
-    return res.status(200).json({
-        message : "Signed in Successfully.",
-        token : token,
-    })
+        return res.status(200).json({
+            message: "Signed in Successfully.",
+            token: token,
+        })
 
-    }catch(error: any){
+    } catch (error: any) {
         console.error("Error while siginig in : ", error)
         return res.status(500).json({
-            message : "Something went wrong while signing in.",
+            message: "Something went wrong while signing in.",
         })
     }
-}
+};
 
 
-export const meController = async (req: Request, res: Response) : Promise<any> => {
-    try{
+export const meController = async (req: Request, res: Response): Promise<any> => {
+    try {
         const userId = (req.user as TokenPayload).userId;
         const user = await User.findById({
             userId
         }).select("-password");
 
-        if(!user){
+        if (!user) {
             return res.status(400).json({
-                message : "No such user exist. Try to signin first."
+                message: "No such user exist. Try to signin first."
             });
         };
 
         return res.status(200).json({
-            message : "User data fetched successfully.",
+            message: "User data fetched successfully.",
             user
         })
 
-    }catch(error){
+    } catch (error) {
         console.error("Error while users data: ", error);
         return res.status(500).json({
-            message : "Internal Server Error."
+            message: "Internal Server Error."
         })
     }
-}
+};
 
 
-export const deleteAccountController = async (req: Request, res: Response) : Promise<any> => {
-    try{
+export const deleteAccountController = async (req: Request, res: Response): Promise<any> => {
+    try {
         const userId = (req.user as TokenPayload).userId;
         await User.findByIdAndDelete(userId);
         return res.status(200).json({
-            message : "Account deleted successfully."
+            message: "Account deleted successfully."
         });
-    }catch(error){
-        console.error("Error while deleting accound: ",error);
+    } catch (error) {
+        console.error("Error while deleting accound: ", error);
         return res.status(500).json({
-            message : "Internal Server Error.",
+            message: "Internal Server Error.",
         });
     };
 };
 
 
-export const updateNameController = async (req: Request, res: Response) : Promise<any> => {
-    const {name} = req.body;
+export const updateNameController = async (req: Request, res: Response): Promise<any> => {
+    const { name } = req.body;
 
-    if(!name || name.trim().length === 0){
+    if (!name || name.trim().length === 0) {
         return res.status(400).json({
-            message : "Name is required.",
+            message: "Name is required.",
         });
     };
 
-    try{
+    try {
         const userId = (req.user as TokenPayload).userId;
         const user = await User.findByIdAndUpdate(userId,
             {
                 $set: {
-                    name : name.trim(),
+                    name: name.trim(),
                 }
             },
             {
@@ -760,33 +285,33 @@ export const updateNameController = async (req: Request, res: Response) : Promis
             }
         );
 
-        if(!user){
+        if (!user) {
             return res.status(400).json({
-                message : "User does not exist."
+                message: "User does not exist."
             });
         };
 
         return res.status(200).json({
-            message : "Name updated successfully."
+            message: "Name updated successfully."
         })
 
-    }catch(error){
+    } catch (error) {
         console.error("Error while updating the name: ", error);
         return res.status(500).json({
-            message : "Internal Server error."
+            message: "Internal Server error."
         });
     };
 };
 
 
-export const updatePasswordGenerateOtpController = async (req: Request, res: Response) : Promise<any> => {
-    try{
+export const updatePasswordGenerateOtpController = async (req: Request, res: Response): Promise<any> => {
+    try {
         const userId = (req.user as TokenPayload).userId;
 
         const user = await User.findById(userId);
-        if(!user){
+        if (!user) {
             return res.status(404).json({
-                message : "User does not exist."
+                message: "User does not exist."
             });
         };
 
@@ -795,14 +320,14 @@ export const updatePasswordGenerateOtpController = async (req: Request, res: Res
 
         await Otp.findOneAndUpdate({
             email: user.email
-        },{
-            $set:{
+        }, {
+            $set: {
                 email: user.email,
                 otp: hashedOtp,
                 otpExpiry: new Date(Date.now() + 5 * 60 * 1000),
                 isVerified: false,
             }
-        },{
+        }, {
             upsert: true,
             new: true,
         })
@@ -810,70 +335,70 @@ export const updatePasswordGenerateOtpController = async (req: Request, res: Res
         await sendOtpEmail(user.email, otp);
 
         return res.status(200).json({
-            message : "Otp send successfully."
+            message: "Otp send successfully."
         })
 
-    }catch(error){
+    } catch (error) {
         console.error("Error occured while generating the otp from updating the password: ", error);
         return res.status(500).json({
-            message : "Internal Server Error."
+            message: "Internal Server Error."
         });
     };
 };
 
 
-export const updatePasswordVerifyOtpController = async (req: Request, res: Response) : Promise<any> => {
-    const {otp} = req.body;
+export const updatePasswordVerifyOtpController = async (req: Request, res: Response): Promise<any> => {
+    const { otp } = req.body;
 
-    if(!otp){
+    if (!otp) {
         return res.status(400).json({
-            message : "Otp is missing. Try to generate first."
+            message: "Otp is missing. Try to generate first."
         });
     };
 
-    try{
+    try {
 
         const userId = (req.user as TokenPayload).userId;
         const user = await User.findById(userId);
-        if(!user){
+        if (!user) {
             return res.status(400).json({
-                message : "User does not exist"
+                message: "User does not exist"
             })
         };
 
         const email = user.email;
 
         const otpRecord = await Otp.findOne({ email });
-        
-        if(!otpRecord){
+
+        if (!otpRecord) {
             return res.status(400).json({
-                message : "Otp not found. Please generate otp first."
-            })
-        }
-        
-        if(!otpRecord.otp){
-            return res.status(400).json({
-                message : "Otp not found or already verified."
+                message: "Otp not found. Please generate otp first."
             })
         }
 
-        if(otpRecord.otpExpiry.getTime() < Date.now()){
+        if (!otpRecord.otp) {
             return res.status(400).json({
-                message : "Otp Expired."
+                message: "Otp not found or already verified."
             })
         }
-        
+
+        if (otpRecord.otpExpiry.getTime() < Date.now()) {
+            return res.status(400).json({
+                message: "Otp Expired."
+            })
+        }
+
         const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
-        if(hashedOtp !== otpRecord.otp){
+        if (hashedOtp !== otpRecord.otp) {
             return res.status(400).json({
-                message : "Invalid Otp"
+                message: "Invalid Otp"
             })
         }
 
         await Otp.updateOne({
             email
-        },{
+        }, {
             $set: {
                 isVerified: true,
             }
@@ -881,35 +406,35 @@ export const updatePasswordVerifyOtpController = async (req: Request, res: Respo
 
 
         return res.status(200).json({
-            message : "Otp verified successfully."
+            message: "Otp verified successfully."
         })
 
-    }catch(error){
+    } catch (error) {
         console.error("Error while verifying otp for updating the password: ", error);
         return res.status(500).json({
-            message : "Internal Server Error."
+            message: "Internal Server Error."
         })
     }
-}
+};
 
 
-export const updatePasswordController = async (req: Request, res: Response) : Promise<any> => {
-    const {newPassword} = req.body;
+export const updatePasswordController = async (req: Request, res: Response): Promise<any> => {
+    const { newPassword } = req.body;
 
-    if(newPassword.length <= 8){
+    if (newPassword.length <= 8) {
         return res.status(400).json({
-            message : "Password should be at least of 8 characters."
+            message: "Password should be at least of 8 characters."
         });
     };
 
-    try{
+    try {
         const userId = (req.user as TokenPayload).userId;
 
         const user = await User.findById(userId);
 
-        if(!user){
+        if (!user) {
             return res.status(400).json({
-                message : "User does not exist."
+                message: "User does not exist."
             })
         }
 
@@ -917,15 +442,15 @@ export const updatePasswordController = async (req: Request, res: Response) : Pr
             email: user.email
         });
 
-        if(!otpRecord){
+        if (!otpRecord) {
             return res.status(400).json({
-                message : "Otp not found. Please generate otp first."
+                message: "Otp not found. Please generate otp first."
             })
         }
 
-        if(!otpRecord.isVerified){
+        if (!otpRecord.isVerified) {
             return res.status(400).json({
-                message : "Otp is not verified. Please first verify the otp."
+                message: "Otp is not verified. Please first verify the otp."
             })
         }
 
@@ -935,41 +460,41 @@ export const updatePasswordController = async (req: Request, res: Response) : Pr
             $set: {
                 password: hashedNewPassword,
             }
-        },{
+        }, {
             new: true,
         });
 
         await otpRecord.deleteOne();
 
         return res.status(200).json({
-            message : "Password updated successfully."
+            message: "Password updated successfully."
         })
 
-    }catch(error){
+    } catch (error) {
         console.error("Error while updating the password: ", error);
         return res.status(500).json({
-            message : "Internal Server Error."
+            message: "Internal Server Error."
         })
     }
-}
+};
 
 
-export const forgotPasswordGenerateOtpController = async (req: Request, res: Response) : Promise<any> => {
+export const forgotPasswordGenerateOtpController = async (req: Request, res: Response): Promise<any> => {
 
-    const {email} = req.body;
+    const { email } = req.body;
 
-    if(!email){
+    if (!email) {
         return res.status(400).json({
-            message : "Email is required"
+            message: "Email is required"
         });
     };
 
-    try{
+    try {
         const user = await User.findOne({ email });
 
-        if(!user){
+        if (!user) {
             return res.status(400).json({
-                message : "User does not exist."
+                message: "User does not exist."
             });
         };
 
@@ -980,148 +505,148 @@ export const forgotPasswordGenerateOtpController = async (req: Request, res: Res
             email
         }, {
             $set: {
-                email : email,
-                otp : hashedOtp,
-                otpExpiry : new Date(Date.now() + 5 * 60 * 1000),
-                isVerified : false,
+                email: email,
+                otp: hashedOtp,
+                otpExpiry: new Date(Date.now() + 5 * 60 * 1000),
+                isVerified: false,
             }
-        },{
-            new : true,
+        }, {
+            new: true,
             upsert: true,
         });
 
         await sendOtpEmail(email, otp);
 
         return res.status(200).json({
-            message : `Otp send to ${email} successfully.`
+            message: `Otp send to ${email} successfully.`
         });
-    }catch(error : any){
+    } catch (error: any) {
         console.error("Error while gererating otp to reset Password: ", error);
         return res.status(500).json({
-            message : "Internal Server Error.",
+            message: "Internal Server Error.",
         });
     };
 };
 
 
-export const forgotPasswordVerifyOtpController = async (req: Request, res: Response) : Promise<any> => {
-    const { email , otp } = req.body;
+export const forgotPasswordVerifyOtpController = async (req: Request, res: Response): Promise<any> => {
+    const { email, otp } = req.body;
 
-    if(!email || !otp){
+    if (!email || !otp) {
         return res.status(400).json({
-            message : "Email and otp are required."
+            message: "Email and otp are required."
         });
     };
 
-    try{
+    try {
         const otpRecord = await Otp.findOne({ email });
 
-        if(!otpRecord){
+        if (!otpRecord) {
             return res.status(400).json({
-                message : "Otp not found. Please generate otp first.",
+                message: "Otp not found. Please generate otp first.",
             });
         };
 
-        if(!otpRecord.otp){
+        if (!otpRecord.otp) {
             return res.status(400).json({
-                message : "Otp not found or already verified.",
+                message: "Otp not found or already verified.",
             });
         };
 
-        if(otpRecord.otpExpiry.getTime() < Date.now()){
+        if (otpRecord.otpExpiry.getTime() < Date.now()) {
             return res.status(400).json({
-                message : "Otp Expired.",
+                message: "Otp Expired.",
             });
         };
 
         const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
-        if(hashedOtp !== otpRecord.otp){
+        if (hashedOtp !== otpRecord.otp) {
             return res.status(400).json({
-                message : "Invalid Otp.",
+                message: "Invalid Otp.",
             });
         };
 
         await Otp.findOneAndUpdate({
             email
-        },{
+        }, {
             $set: {
                 isVerified: true,
             }
-        },{
+        }, {
             new: true,
         });
 
         return res.status(200).json({
-            message : "Otp verified successfully."
+            message: "Otp verified successfully."
         });
 
-    }catch(error: any){
+    } catch (error: any) {
         console.error("Error while verifying the otp for reset Password: ", error);
 
         return res.status(500).json({
-            message : "Internal Server Error."
+            message: "Internal Server Error."
         });
     };
 };
 
 
-export const forgotPasswordResetController = async (req: Request, res: Response) : Promise<any> => {
+export const forgotPasswordResetController = async (req: Request, res: Response): Promise<any> => {
     const { email, newPassword } = req.body;
 
-    if(!email || !newPassword){
+    if (!email || !newPassword) {
         return res.status(400).json({
-            message : "Email and new Password are required.",
+            message: "Email and new Password are required.",
         });
     };
 
-    if(newPassword.length < 8){
+    if (newPassword.length < 8) {
         return res.status(400).json({
-            message : "Password must be at least 8 characters long.",
+            message: "Password must be at least 8 characters long.",
         })
     }
 
-    try{
+    try {
         const user = await User.findOne({ email });
 
-        if(!user){
+        if (!user) {
             return res.status(400).json({
-                message : "User does not exist."
+                message: "User does not exist."
             });
         };
 
         const otpRecord = await Otp.findOne({ email });
 
-        if(!otpRecord){
+        if (!otpRecord) {
             return res.status(400).json({
-                message : "Otp not found. Try to generate otp first.",
+                message: "Otp not found. Try to generate otp first.",
             });
         };
 
-        if(!otpRecord.isVerified){
+        if (!otpRecord.isVerified) {
             return res.status(400).json({
-                message : "Otp is not verified. First verify it."
+                message: "Otp is not verified. First verify it."
             });
         };
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         await User.updateOne({ email }, {
-            $set : {
-                password : hashedPassword,
+            $set: {
+                password: hashedPassword,
             }
         });
 
         await otpRecord.deleteOne();
 
         return res.status(200).json({
-            message : "Password reset successfully.",
+            message: "Password reset successfully.",
         });
 
-    }catch(error){
+    } catch (error) {
         console.error("Error while reseting the password: ", error);
         return res.status(500).json({
-            message : "Internal Server Error."
+            message: "Internal Server Error."
         });
     };
 };
